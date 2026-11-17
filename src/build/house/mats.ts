@@ -14,6 +14,7 @@ export function houseMats() {
     deck: M.woodFloor('#8e887d', 'z', 0.12),
     porchCeil: M.beadboard('#c9a27a'),
     stone: M.stone('#8e877c'),
+    mulch: M.paint('#3f2c1f', 0.95),
     plaster: M.plaster('#efe6d6'),
     floor: M.woodFloor('#93633e', 'x', 0.14),
     bathFloor: M.tile('#efefe9', 0.2, '#2e2e2c'),

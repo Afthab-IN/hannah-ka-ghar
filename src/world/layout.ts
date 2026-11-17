@@ -23,7 +23,8 @@ export const DOCK = { x: 14.2, z: -1.6, len: 6.5, w: 1.6, yaw: 0.35 }; // yaw: d
 // split-rail fence between the meadow and the house lawn, with a gate on the path
 export const FENCE_MAIN = { z: -12, x0: -72, x1: 72, gateX: 0.5, gateW: 3.2 };
 
-export const HOUSE = { x: 0, z: -42, w: 11, d: 8, porchD: 2.4, floorLift: 0.75 };
+// bigger in 2nd pass: the porch front edge stays at z -35.6 so the steps meet the path at (0, -34.5)
+export const HOUSE = { x: 0, z: -42.8, w: 13.6, d: 9.6, porchD: 2.4, floorLift: 0.75 };
 export const BAKERY = { x: -27, z: -38, w: 7, d: 6, yaw: Math.PI / 2 }; // door faces +x (toward the path)
 export const COOP = { x: -34, z: -47 };
 export const BARN = { x: 40, z: -62, w: 14, d: 18 }; // big doors face +z
@@ -46,7 +47,7 @@ export const BIG_OAKS = [
 
 // flat building pads (terrain is blended to the pad centre height)
 export const PADS: Pad[] = [
-  { x: HOUSE.x, z: HOUSE.z + 0.6, hx: 9.5, hz: 7.5, margin: 9 },
+  { x: HOUSE.x + 1.2, z: HOUSE.z + 1.2, hx: 10.8, hz: 8.2, margin: 9 },
   { x: BAKERY.x, z: BAKERY.z, hx: 5.5, hz: 5, margin: 7 },
   { x: BARN.x, z: BARN.z, hx: 10, hz: 12.5, margin: 9 },
   { x: GREENHOUSE.x, z: GREENHOUSE.z, hx: 4.2, hz: 5.6, margin: 5 },
@@ -64,7 +65,7 @@ export const PATHS: { pts: [number, number][]; w: number }[] = [
   // to the barn
   { pts: [[0.3, -26], [12, -36], [26, -46], [40, -50]], w: 1.2 },
   // round the back to the garden and greenhouse
-  { pts: [[-8, -30], [-9, -48], [-12, -56], [-24, -62]], w: 0.7 },
+  { pts: [[-8, -30], [-10.8, -40], [-11, -50], [-13, -56], [-24, -62]], w: 0.7 },
   // up the hill to the windmill
   { pts: [[26, -46], [28, -70], [24, -88], [26, -100]], w: 0.6 },
   // to the fire pit and dock

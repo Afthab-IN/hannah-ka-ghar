@@ -111,7 +111,7 @@ export function lupineGeo(seed: number): THREE.BufferGeometry {
   return P.geometry();
 }
 
-export function daisyGeo(seed: number, petals = 13, centre: V3 = [0.16, 0.07, 0.02]): THREE.BufferGeometry {
+export function daisyGeo(seed: number, petals = 13, centre: V3 = [0.16, 0.07, 0.02], droopMul = 1, coneH = 0.022): THREE.BufferGeometry {
   const rnd = mulberry32(seed);
   const P = new Parts();
   const tilt: [number, number] = [(rnd() - 0.5) * 0.12, (rnd() - 0.5) * 0.12];
@@ -126,7 +126,7 @@ export function daisyGeo(seed: number, petals = 13, centre: V3 = [0.16, 0.07, 0.
     const ox = Math.cos(a), oz = Math.sin(a);
     const sxv = -oz, szv = ox;
     const w = 0.013 + rnd() * 0.004;
-    const droop = 0.012 + rnd() * 0.02;
+    const droop = (0.012 + rnd() * 0.02) * droopMul;
     const base: V3 = [0.7, 0.7, 0.7], tipC: V3 = [1.05, 1.05, 1.05];
     const p0: V3 = [hx + ox * r0 - sxv * w * 0.5, hy, hz + oz * r0 - szv * w * 0.5];
     const p1: V3 = [hx + ox * r0 + sxv * w * 0.5, hy, hz + oz * r0 + szv * w * 0.5];
@@ -140,7 +140,7 @@ export function daisyGeo(seed: number, petals = 13, centre: V3 = [0.16, 0.07, 0.
   const segs = 7;
   for (let k = 0; k < segs; k++) {
     const a0 = (k / segs) * Math.PI * 2, a1 = ((k + 1) / segs) * Math.PI * 2;
-    P.tri([hx + Math.cos(a0) * r0 * 1.3, hy + 0.002, hz + Math.sin(a0) * r0 * 1.3], [hx, hy + 0.022, hz], [hx + Math.cos(a1) * r0 * 1.3, hy + 0.002, hz + Math.sin(a1) * r0 * 1.3], centre, [centre[0] * 0.6, centre[1] * 0.6, centre[2] * 0.6]);
+    P.tri([hx + Math.cos(a0) * r0 * 1.3, hy + 0.002, hz + Math.sin(a0) * r0 * 1.3], [hx, hy + coneH, hz], [hx + Math.cos(a1) * r0 * 1.3, hy + 0.002, hz + Math.sin(a1) * r0 * 1.3], centre, [centre[0] * 0.6, centre[1] * 0.6, centre[2] * 0.6]);
   }
   return P.geometry();
 }

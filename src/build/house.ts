@@ -21,10 +21,12 @@ import { loadFurniture, Furniture } from './house/furniture';
 const { X, Z, F, A, G } = D;
 
 export const HOUSE_PLACES: { name: string; x: number; z: number; yaw: number; y?: number }[] = [
-  { name: 'Living room', x: X(4.5), z: Z(1.75), yaw: 1.5, y: F },
-  { name: 'Kitchen', x: X(4.05), z: Z(-0.55), yaw: Math.atan2(1.85, 2.7), y: F },
-  { name: 'Attic bedroom', x: X(-1.4), z: Z(-1.9), yaw: Math.atan2(-5.8, -1.9), y: A },
-  { name: 'Back door', x: X(1.61), z: Z(-7.6), yaw: Math.PI, y: G },
+  { name: 'Living room', x: X(5.4), z: Z(3.9), yaw: Math.atan2(2.5, 3.24), y: F },
+  { name: 'Kitchen', x: X(3.9), z: Z(-0.8), yaw: 0.55, y: F },
+  { name: 'Bathroom', x: X(D.WING_U - 0.55), z: Z(-0.95), yaw: Math.PI / 2 + 0.35, y: F },
+  { name: 'Attic bedroom', x: X(1.6), z: Z(-1.9), yaw: Math.atan2(-4.4, -1.9), y: A },
+  { name: 'Upstairs bathroom', x: X(D.AB_U - 0.6), z: Z(0.15), yaw: Math.PI / 2 + 0.1, y: A },
+  { name: 'Back door', x: X(D.BACK_DOOR_U), z: Z(-D.D2 - 2.8), yaw: Math.PI, y: G },
 ];
 
 export default async function build(_ctx: BuildCtx) {
@@ -43,7 +45,7 @@ export default async function build(_ctx: BuildCtx) {
 
   const g = b.build();
   // interior-only and very small surfaces do not need to cast sun shadows
-  const noCast = new Set<THREE.Material>([m.linen, m.rust, m.green, m.tileWall, m.bathFloor, m.bead, m.porchCeil, m.stone, m.cabinet, m.iron, m.floor, m.deck, m.woodLight, MIRROR]);
+  const noCast = new Set<THREE.Material>([m.linen, m.rust, m.green, m.tileWall, m.bathFloor, m.bead, m.porchCeil, m.stone, m.mulch, m.cabinet, m.iron, m.floor, m.deck, m.woodLight, MIRROR]);
   g.traverse((o) => { const mesh = o as THREE.Mesh; if (mesh.isMesh && noCast.has(mesh.material as THREE.Material)) mesh.castShadow = false; });
   W.scene.add(g);
   const furn = new THREE.Group();
@@ -57,6 +59,7 @@ export default async function build(_ctx: BuildCtx) {
 
   // ground floor and attic. The attic box reaches up to the ridge, so the roof above
   // the footprint sits inside it: the roof uses a material that ignores indoor volumes.
-  addIndoorVolume(new THREE.Vector3(X(-5.47), F - 0.3, Z(-3.97)), new THREE.Vector3(X(5.47), F + 2.72, Z(3.97)));
-  addIndoorVolume(new THREE.Vector3(X(-5.47), F + 2.72, Z(-3.97)), new THREE.Vector3(X(5.47), D.P + D.RISE + 0.08, Z(3.97)));
+  const ix = D.W2 - 0.03, iz = D.D2 - 0.03, yc = F + D.CEIL + 0.02;
+  addIndoorVolume(new THREE.Vector3(X(-ix), F - 0.3, Z(-iz)), new THREE.Vector3(X(ix), yc, Z(iz)));
+  addIndoorVolume(new THREE.Vector3(X(-ix), yc, Z(-iz)), new THREE.Vector3(X(ix), D.P + D.RISE + 0.08, Z(iz)));
 }
