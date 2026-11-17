@@ -1,0 +1,7 @@
+node_modules
+dist
+_downloads
+_tools
+.DS_Store
+shots/*
+!shots/hero.jpg
