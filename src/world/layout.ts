@@ -47,7 +47,7 @@ export const BIG_OAKS = [
 
 // flat building pads (terrain is blended to the pad centre height)
 export const PADS: Pad[] = [
-  { x: HOUSE.x + 1.2, z: HOUSE.z + 1.2, hx: 10.8, hz: 8.2, margin: 9 },
+  { x: HOUSE.x - 0.6, z: HOUSE.z + 1.2, hx: 12.6, hz: 8.2, margin: 9 }, // includes the west terrace wing
   { x: BAKERY.x, z: BAKERY.z, hx: 5.5, hz: 5, margin: 7 },
   { x: BARN.x, z: BARN.z, hx: 10, hz: 12.5, margin: 9 },
   { x: GREENHOUSE.x, z: GREENHOUSE.z, hx: 4.2, hz: 5.6, margin: 5 },
@@ -65,7 +65,7 @@ export const PATHS: { pts: [number, number][]; w: number }[] = [
   // to the barn
   { pts: [[0.3, -26], [12, -36], [26, -46], [40, -50]], w: 1.2 },
   // round the back to the garden and greenhouse
-  { pts: [[-8, -30], [-10.8, -40], [-11, -50], [-13, -56], [-24, -62]], w: 0.7 },
+  { pts: [[-8, -30], [-14.2, -38], [-14.4, -50], [-15, -56], [-24, -62]], w: 0.7 },
   // up the hill to the windmill
   { pts: [[26, -46], [28, -70], [24, -88], [26, -100]], w: 0.6 },
   // to the fire pit and dock

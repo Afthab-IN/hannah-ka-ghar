@@ -49,7 +49,7 @@ export class Player {
   sit(m: Mount) {
     this.mount = m;
     this.mountYaw = 0;
-    this.pitch = Math.max(-0.5, Math.min(0.2, this.pitch));
+    this.pitch = m.pitch ?? Math.max(-0.5, Math.min(0.2, this.pitch));
     W.toast(m.label ? `${m.label}. Move or press E to get up` : 'Move or press E to get up');
   }
 

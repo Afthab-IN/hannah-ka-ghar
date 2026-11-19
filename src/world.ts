@@ -16,6 +16,7 @@ export interface Mount {
   label?: string; // e.g. "Get up"
   onLeave?: () => void;
   yawRange?: number; // how far you can turn your head (radians, default 1.6)
+  pitch?: number; // starting look up/down (e.g. 1.0 to lie back and look at the stars)
 }
 
 class World {

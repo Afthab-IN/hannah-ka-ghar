@@ -121,7 +121,8 @@ async function init() {
     if (!W.held) return;
     const what = W.held.label;
     W.hold(null);
-    ui.toast(`You eat ${what}. Still warm. Delicious.`);
+    const drink = /coffee|tea|chai|cocoa|lemonade|milk/i.test(what);
+    ui.toast(drink ? `You sip ${what}. Warm and perfect.` : `You eat ${what}. Still warm. Delicious.`);
   };
   const useOrEat = () => { if (W.interact.target) W.interact.use(); else eat(); };
   player.onUseRequest = useOrEat;
@@ -233,7 +234,7 @@ async function init() {
     // what is under the crosshair
     if (player.active && !player.mount) {
       const it = W.interact.update(camera.position, camDir.set(0, 0, -1).applyQuaternion(camera.quaternion));
-      ui.setTarget(it ? W.interact.labelOf(it) : W.held ? `Eat ${W.held.label}` : null);
+      ui.setTarget(it ? W.interact.labelOf(it) : W.held ? `${/coffee|tea|chai|cocoa|lemonade|milk/i.test(W.held.label) ? 'Drink' : 'Eat'} ${W.held.label}` : null);
     } else ui.setTarget(null);
     ui.tick(tod.hour, U.uNight.value);
 

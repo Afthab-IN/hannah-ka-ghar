@@ -12,6 +12,7 @@ import { buildPorchLife } from './house/porch';
 import { buildGarden } from './house/garden';
 import { ATLAS_SIZE, drawAtlas } from './house/atlas';
 import { MIRROR } from './house/interior';
+import { buildWing } from './house/wing';
 import { loadFurniture, Furniture } from './house/furniture';
 
 // Hannah ka Ghar: the white clapboard farmhouse on the rise. 1.5 storeys,
@@ -26,6 +27,8 @@ export const HOUSE_PLACES: { name: string; x: number; z: number; yaw: number; y?
   { name: 'Bathroom', x: X(D.WING_U - 0.55), z: Z(-0.95), yaw: Math.PI / 2 + 0.35, y: F },
   { name: 'Attic bedroom', x: X(1.6), z: Z(-1.9), yaw: Math.atan2(-4.4, -1.9), y: A },
   { name: 'Upstairs bathroom', x: X(D.AB_U - 0.6), z: Z(0.15), yaw: Math.PI / 2 + 0.1, y: A },
+  { name: 'Rooftop terrace', x: X(-7.9), z: Z(0.3), yaw: Math.PI / 2, y: A },
+  { name: 'Balcony', x: X(D.W2 + 0.45), z: Z(D.BAL_DOOR_V), yaw: -Math.PI / 2, y: D.BAL_Y },
   { name: 'Back door', x: X(D.BACK_DOOR_U), z: Z(-D.D2 - 2.8), yaw: Math.PI, y: G },
 ];
 
@@ -41,6 +44,7 @@ export default async function build(_ctx: BuildCtx) {
   buildShell(b, m, props);
   buildInterior({ b, m, props, atlas, shades, fu });
   buildPorchLife({ b, m, props, atlas, shades, fu });
+  buildWing({ b, m, props, atlas, shades, fu });
   buildGarden(b, m);
 
   const g = b.build();

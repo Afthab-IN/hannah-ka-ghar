@@ -5,3 +5,5 @@ _tools
 .DS_Store
 shots/*
 !shots/hero.jpg
+
+.claude/

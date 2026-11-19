@@ -577,19 +577,22 @@ export function buildInterior(c: Ctx) {
   // =================================================================== ATTIC
   const kv = D.ATTIC_WALK_V;
   {
-    // the upstairs bathroom at the west gable: slipper tub under the window, toilet and sink on the partition
+    // the upstairs bathroom, north west corner: slipper tub under the gable window, toilet and sink on the partition
     const bu0 = -IX, bu1 = D.AB_U - TI2;
-    clawTub(c, bu0 + 0.4, 0, true, A);
-    toilet(c, new Frame(X(bu1 - 0.42), A, Z(-1.9), Math.PI / 2));
-    pedestalSink(c, new Frame(X(bu1 - 0.3), A, Z(1.75), Math.PI / 2), false);
-    atlas.rug(X(bu0 + 1.15), A + 0.012, Z(0), 0.5, 0.9, R.bathmat);
-    // towel ladder and a basket under the south slope
-    for (const dz of [-0.2, 0.2]) b.box(m.woodLight, X(-5.6) , A + 0.75, Z(2.7 + dz), 0.04, 1.5, 0.04, { rotX: 0, rotZ: 0.18, collide: false });
-    for (let k = 0; k < 4; k++) b.box(m.woodLight, X(-5.6 + 0.05 * k), A + 0.35 + k * 0.33, Z(2.7), 0.025, 0.025, 0.44, { collide: false });
-    atlas.box(X(-5.54), A + 0.95, Z(2.7), 0.03, 0.5, 0.36, R.towel);
-    props.cyl(X(-4.6), A, Z(3.05), 0.2, 0.3, '#b08d5a');
-    props.cyl(X(-6.2), A, Z(-2.6), 0.07, 0.12, '#a85c3a');
-    for (let i = 0; i < 6; i++) props.ball(X(-6.2 + (rnd() - 0.5) * 0.14), A + 0.2 + rnd() * 0.1, Z(-2.6 + (rnd() - 0.5) * 0.12), 0.06, 0.05, 0.06, '#5f8a45');
+    clawTub(c, bu0 + 0.4, -1.9, true, A);
+    toilet(c, new Frame(X(bu1 - 0.42), A, Z(-2.6), Math.PI / 2));
+    pedestalSink(c, new Frame(X(bu1 - 0.3), A, Z(-1.3), Math.PI / 2), false);
+    atlas.rug(X(bu0 + 1.15), A + 0.012, Z(-1.9), 0.5, 0.9, R.bathmat);
+    bx(m.woodDark, bu1 - 0.08, A + 1.0, -2.2, bu1, A + 1.03, -1.85);
+    atlas.box(X(bu1 - 0.07), A + 0.78, Z(-2.03), 0.03, 0.46, 0.32, R.towel);
+    props.cyl(X(-6.2), A, Z(-3.0), 0.07, 0.12, '#a85c3a');
+    for (let i = 0; i < 6; i++) props.ball(X(-6.2 + (rnd() - 0.5) * 0.14), A + 0.2 + rnd() * 0.1, Z(-3.0 + (rnd() - 0.5) * 0.12), 0.06, 0.05, 0.06, '#5f8a45');
+    // the landing in front of the terrace door: a plant and a basket of blankets
+    props.cyl(X(-6.3), A, Z(1.0), 0.18, 0.3, '#a85c3a');
+    for (let i = 0; i < 9; i++) props.ball(X(-6.3 + (rnd() - 0.5) * 0.3), A + 0.4 + rnd() * 0.4, Z(1.0 + (rnd() - 0.5) * 0.3), 0.13, 0.16, 0.13, pick(['#4e7a3e', '#5f8a45']));
+    W.physics.addCylinder(X(-6.3), Z(1.0), 0.22, A, A + 0.8);
+    props.cyl(X(-4.6), A, Z(2.6), 0.22, 0.32, '#9c7a52');
+    props.box(X(-4.6), A + 0.36, Z(2.6), 0.34, 0.08, 0.3, '#c9a46a', 0.3);
   }
   {
     // iron bed with its head against the east gable, between the two windows
@@ -650,14 +653,14 @@ export function buildInterior(c: Ctx) {
     books(props, 'z', dv0 + 0.3, dv0 + 0.62, A + 0.76, IX - 0.14, 0.18, 0.24);
   }
   {
-    // reading chair looking out of the south east window, with a floor lamp
-    const yaw = -1.19;
-    const f = new Frame(X(5.15), A, Z(2.2), yaw);
+    // reading chair by the low bookcase, with a floor lamp
+    const yaw = -1.3;
+    const f = new Frame(X(1.5), A, Z(2.3), yaw);
     if (c.fu.has('ArmChair_01')) { model(c, 'ArmChair_01', f); f.solid(0.86, 1.0, 0.8); }
     else armchair(c, f, m.green, m.woodDark, 0.84);
     seat('Sit in the reading chair', f.p(0, 0.5, 0), f.p(0, 1.12, 0.06), yaw, f.p(0, 0, -0.75));
-    floorLamp(c, 4.4, 2.75, A);
-    atlas.rug(X(5.3), A + 0.009, Z(2.35), 1.6, 1.0, R.rug3, true);
+    floorLamp(c, 2.25, 3.0, A);
+    atlas.rug(X(1.6), A + 0.009, Z(2.35), 1.6, 1.0, R.rug3, true);
   }
   {
     // low bookcase under the south slope, chest of drawers under the north slope

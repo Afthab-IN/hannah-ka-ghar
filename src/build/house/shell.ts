@@ -49,19 +49,33 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   const L = 2 * IZ;
   const hE = D.roofUnder(IZ) - YB;
   const AT = { w: 0.75, y0: A + 1.15, y1: A + 2.1 }; // attic windows
-  const bathW = { v: -2.4, w: 0.8, y0: F + 1.2, y1: F + 2.3 };
+  const upBathW = { v: -1.9, w: 0.7, y0: A + 1.15, y1: A + 2.05 }; // upstairs bathroom window over the tub
   const kWin = { v: -2.4, w: 0.9, y0: F + 1.08, y1: F + 2.25 };
-  const eastAttic = [-1.7, 1.7];
+  const eastAttic = [-1.7]; // the south one became the balcony door
+  const sunD = { v0: D.SUN_DOOR_V - 0.5, v1: D.SUN_DOOR_V + 0.5, h: 2.12 };
+  const tD = { v0: D.TDOOR_V - 0.5, v1: D.TDOOR_V + 0.5, h: 2.1 };
+  const bD = { v0: D.BAL_DOOR_V - 0.5, v1: D.BAL_DOOR_V + 0.5, h: 2.0 };
+  // gable walls get their colliders by hand: the kit only opens a walk-through gap for holes at its base
+  const gableCols = (u: number, doors: { v0: number; v1: number; y0: number; y1: number }[]) => {
+    const top = A + 2.4, t = T / 2 + 0.02;
+    const cuts = [...doors].sort((p, q) => p.v0 - q.v0);
+    let v = -IZ;
+    const box = (v0: number, y0: number, v1: number, y1: number) => W.physics.addBox(X(u - t), y0, Z(v0), X(u + t), y1, Z(v1), { walk: y0 < YB + 0.01 });
+    for (const d of cuts) { box(v, YB, d.v0, top); box(d.v0, YB, d.v1, d.y0); box(d.v0, d.y1, d.v1, top); v = d.v1; }
+    box(v, YB, IZ, top);
+  };
   wall(b, {
-    a: [X(-W2), Z(-IZ)], b: [X(-W2), Z(IZ)], y: YB, h: hE, t: T, outer: m.siding, inner: m.plaster, outSide: -1,
+    a: [X(-W2), Z(-IZ)], b: [X(-W2), Z(IZ)], y: YB, h: hE, t: T, outer: m.siding, inner: m.plaster, outSide: -1, collide: false,
     outline: gableOutline(L, hE, RISE * (IZ / D2)),
-    holes: [hole(2.4, WIN.w, WIN.y0, WIN.y1, -IZ), hole(bathW.v, bathW.w, bathW.y0, bathW.y1, -IZ), hole(0, AT.w, AT.y0, AT.y1, -IZ)],
+    holes: [hole(D.SUN_DOOR_V, 1.0, F, F + sunD.h, -IZ), hole(upBathW.v, upBathW.w, upBathW.y0, upBathW.y1, -IZ), hole(D.TDOOR_V, 1.0, A, A + tD.h, -IZ)],
   });
+  gableCols(-W2, [{ v0: sunD.v0, v1: sunD.v1, y0: F, y1: F + sunD.h }, { v0: tD.v0, v1: tD.v1, y0: A, y1: A + tD.h }]);
   wall(b, {
-    a: [X(W2), Z(-IZ)], b: [X(W2), Z(IZ)], y: YB, h: hE, t: T, outer: m.siding, inner: m.plaster, outSide: 1,
+    a: [X(W2), Z(-IZ)], b: [X(W2), Z(IZ)], y: YB, h: hE, t: T, outer: m.siding, inner: m.plaster, outSide: 1, collide: false,
     outline: gableOutline(L, hE, RISE * (IZ / D2)),
-    holes: [hole(2.4, WIN.w, WIN.y0, WIN.y1, -IZ), hole(kWin.v, kWin.w, kWin.y0, kWin.y1, -IZ), ...eastAttic.map((v) => hole(v, AT.w, AT.y0, AT.y1, -IZ))],
+    holes: [hole(2.4, WIN.w, WIN.y0, WIN.y1, -IZ), hole(kWin.v, kWin.w, kWin.y0, kWin.y1, -IZ), ...eastAttic.map((v) => hole(v, AT.w, AT.y0, AT.y1, -IZ)), hole(D.BAL_DOOR_V, 1.0, D.BAL_Y, D.BAL_Y + bD.h, -IZ)],
   });
+  gableCols(W2, [{ v0: bD.v0, v1: bD.v1, y0: D.BAL_Y, y1: D.BAL_Y + bD.h }]);
   // corner boards and the frieze under the eaves
   for (const su of [-1, 1]) for (const sv of [-1, 1]) {
     const ou = su * (W2 + 0.1), ov = sv * (D2 + 0.1);
@@ -77,10 +91,9 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   const ay = (AT.y0 + AT.y1) / 2, ah = AT.y1 - AT.y0;
   for (const u of frontWins) win(u, D2, wy, WIN.w, wh, [0, 1], [3, 4], true);
   for (const w of backWins) win(w.u, -D2, (w.y0 + w.y1) / 2, w.w, w.y1 - w.y0, [0, -1], w.mun, false);
-  for (const s of [-1, 1]) win(s * W2, 2.4, wy, WIN.w, wh, [s, 0], [3, 4], true);
-  win(-W2, bathW.v, (bathW.y0 + bathW.y1) / 2, bathW.w, bathW.y1 - bathW.y0, [-1, 0], [2, 3], true);
+  win(W2, 2.4, wy, WIN.w, wh, [1, 0], [3, 4], true);
+  win(-W2, upBathW.v, (upBathW.y0 + upBathW.y1) / 2, upBathW.w, upBathW.y1 - upBathW.y0, [-1, 0], [2, 3], false);
   win(W2, kWin.v, (kWin.y0 + kWin.y1) / 2, kWin.w, kWin.y1 - kWin.y0, [1, 0], [3, 2], true);
-  win(-W2, 0, ay, AT.w, ah, [-1, 0], [2, 3], false);
   for (const v of eastAttic) win(W2, v, ay, AT.w, ah, [1, 0], [2, 3], false);
 
   // ---------------------------------------------------------------- interior walls
@@ -121,6 +134,20 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
         bx(m.trim, f, F, s1, f + sd * ct, F + h + cw, s1 + cw);
         bx(m.trim, f, F + h, s0 - cw - 0.02, f + sd * (ct + 0.008), F + h + cw + 0.03, s1 + cw + 0.02);
       }
+    }
+  };
+  // casing round a door whose sill is at y0 (attic-level doors)
+  const casing = (along: 'x' | 'z', c: number, s0: number, s1: number, y0: number, h: number, t: number) => {
+    const cw = 0.09, ct = 0.022;
+    const B = (a0: number, ya: number, b0: number, a1: number, yb: number, b1: number) => along === 'x' ? bx(m.trim, a0, ya, b0, a1, yb, b1) : bx(m.trim, b0, ya, a0, b1, yb, a1);
+    B(s0 - 0.015, y0, c - t / 2, s0, y0 + h, c + t / 2);
+    B(s1, y0, c - t / 2, s1 + 0.015, y0 + h, c + t / 2);
+    B(s0 - 0.015, y0 + h - 0.015, c - t / 2, s1 + 0.015, y0 + h, c + t / 2);
+    for (const sd of [-1, 1]) {
+      const f = c + sd * t / 2;
+      B(s0 - cw, y0, f, s0, y0 + h + cw, f + sd * ct);
+      B(s1, y0, f, s1 + cw, y0 + h + cw, f + sd * ct);
+      B(s0 - cw - 0.02, y0 + h, f, s1 + cw + 0.02, y0 + h + cw + 0.03, f + sd * (ct + 0.008));
     }
   };
   opening('x', D2, -0.51, 0.51, DOOR_H, T); // front door
@@ -251,27 +278,39 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   const tieY = A + 2.75;
   const tieV = D2 * (1 - (tieY + 0.16 - P) / RISE) + 0.01; // ends where the tie's top meets the slope
   for (const u of [-6.0, -4.6, -2.2, -0.8, 0.8, 4.4, 5.8]) bx(m.woodDark, u - 0.06, tieY, -tieV, u + 0.06, tieY + 0.16, tieV);
-  // the upstairs bathroom: a partition across the west end, up to the roof, with a door under the ridge
+  // the upstairs bathroom: the north west corner of the attic, behind a partition (to the roof) and a
+  // hall wall under the ridge; the rest of the west end is a landing in front of the terrace door
   {
-    const kv = D.KNEE_V, hk = D.roofUnder(kv) - A, hr = D.roofUnder(0) - A;
+    const kv = D.KNEE_V, hk = D.roofUnder(kv) - A, hv = D.BW_V;
+    const hh = D.roofUnder(Math.abs(hv) - TI / 2) - A;
     wall(b, {
-      a: [X(D.AB_U), Z(-kv)], b: [X(D.AB_U), Z(kv)], y: A, t: TI, outer: pl, inner: pl, outSide: 1,
-      outline: [[0, 0], [2 * kv, 0], [2 * kv, hk], [kv, hr], [0, hk]],
-      holes: [{ u0: kv - 0.5, u1: kv + 0.5, y0: 0, y1: 2.08 }],
+      a: [X(D.AB_U), Z(-kv)], b: [X(D.AB_U), Z(hv - TI / 2)], y: A, t: TI, outer: pl, inner: pl, outSide: 1,
+      outline: [[0, 0], [kv + hv - TI / 2, 0], [kv + hv - TI / 2, hh], [0, hk]],
     });
-    bx(m.bathFloor, -IX, A, -kv, D.AB_U - TI / 2, A + 0.006, kv, false);
-    for (const sd of [-1, 1]) {
-      const f = D.AB_U + sd * TI / 2;
-      bx(m.trim, f, A, -0.5 - 0.09, f + sd * 0.022, A + 2.08 + 0.09, -0.5);
-      bx(m.trim, f, A, 0.5, f + sd * 0.022, A + 2.08 + 0.09, 0.5 + 0.09);
-      bx(m.trim, f, A + 2.08, -0.61, f + sd * 0.03, A + 2.2, 0.61);
-    }
-    bx(m.trim, D.AB_U - TI / 2, A, -0.515, D.AB_U + TI / 2, A + 2.08, -0.5);
-    bx(m.trim, D.AB_U - TI / 2, A, 0.5, D.AB_U + TI / 2, A + 2.08, 0.515);
-    bx(m.trim, D.AB_U - TI / 2, A + 2.065, -0.515, D.AB_U + TI / 2, A + 2.08, 0.515);
-    const d = makeDoor({ hinge: new THREE.Vector3(X(D.AB_U), A, Z(0.49)), w: 0.98, h: 2.06, dir: [0, -1], swing: 1, mat: white, name: 'bathroom door' });
-    doors.push(d);
+    const d0 = D.UPBATH_DOOR_U - 0.5, d1 = D.UPBATH_DOOR_U + 0.5;
+    wall(b, {
+      a: [X(-IX), Z(hv)], b: [X(D.AB_U + TI / 2), Z(hv)], y: A, h: hh, t: TI, outer: pl, inner: pl, outSide: 1,
+      holes: [{ u0: d0 + IX, u1: d1 + IX, y0: 0, y1: 2.08 }],
+    });
+    bx(m.bathFloor, -IX, A, -kv, D.AB_U - TI / 2, A + 0.006, hv - TI / 2, false);
+    casing('x', hv, d0, d1, A, 2.08, TI);
+    doors.push(makeDoor({ hinge: new THREE.Vector3(X(d0 + 0.01), A, Z(hv)), w: 0.98, h: 2.06, dir: [1, 0], swing: 1, mat: white, name: 'bathroom door' }));
   }
+  // glazed doors at attic level: out to the roof terrace (west) and the balcony (east)
+  {
+    const glass = M.glass(0.6);
+    casing('z', -W2, tD.v0, tD.v1, A, tD.h, T);
+    bx(m.woodDark, -W2 - 0.12, A - 0.03, tD.v0, -W2 + 0.12, A + 0.012, tD.v1, true);
+    doors.push(makeDoor({ hinge: new THREE.Vector3(X(-W2), A + 0.012, Z(tD.v0 + 0.01)), w: 0.98, h: 2.06, dir: [0, 1], swing: 1, mat: doorPaint, glass, name: 'terrace door' }));
+    casing('z', W2, bD.v0, bD.v1, D.BAL_Y, bD.h, T);
+    bx(m.woodDark, W2 - 0.12, D.BAL_Y - 0.03, bD.v0, W2 + 0.12, D.BAL_Y + 0.012, bD.v1, true);
+    // a step up inside: the balcony floor has to clear the porch roof below it
+    bx(m.floor, IX - 0.42, A, bD.v0, IX, A + 0.18, bD.v1, true);
+    bx(m.trim, IX - 0.435, A, bD.v0, IX - 0.42, A + 0.18, bD.v1);
+    doors.push(makeDoor({ hinge: new THREE.Vector3(X(W2), D.BAL_Y + 0.012, Z(bD.v1 - 0.01)), w: 0.98, h: 1.96, dir: [0, -1], swing: 1, mat: doorPaint, glass, name: 'balcony door' }));
+  }
+  // the bedroom opens into the sunroom where its west window used to be
+  opening('z', -W2, sunD.v0, sunD.v1, sunD.h, T);
   doors.forEach((d, i) => {
     // only the outside doors' leaves need to block the sun
     d.group.traverse((o) => { const me = o as THREE.Mesh; if (me.isMesh) me.castShadow = i < 2 && !(me.material as THREE.Material).transparent; });

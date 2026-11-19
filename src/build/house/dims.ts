@@ -67,3 +67,16 @@ export const CH_TOP = P + RISE + 1.05;
 // attic: the bathroom fills the west gable end behind a partition at AB_U
 export const AB_U = -3.9;
 export const BACK_DOOR_U = -1.0; // back door (north wall), opening off the back hall
+
+// west wing: a one-storey sunroom whose flat roof is the rooftop terrace (deck at attic level)
+export const WING_U0 = -W2 - 4.0; // outer wall centre line, west side (about x -10.8)
+export const WING_V = 3.6; // wing spans v -WING_V..WING_V (sits back from the front wall)
+export const TERRACE_Y = A; // deck top, level with the attic floor
+export const TDOOR_V = 0; // terrace door in the west gable (attic level)
+export const SUN_DOOR_V = 2.4; // doorway from the bedroom into the sunroom (was the west window)
+// balcony off the attic bedroom on the east gable; it sits just above the east porch roof
+export const BAL_V0 = 0.55, BAL_V1 = 2.95, BAL_D = 1.3;
+export const BAL_DOOR_V = 1.7;
+export const BAL_Y = A + 0.36; // deck top (the porch roof meets the wall at RT, just above the attic floor)
+export const BW_V = -0.6; // upstairs bathroom: hall wall under the ridge (bathroom north of it)
+export const UPBATH_DOOR_U = -4.9;
