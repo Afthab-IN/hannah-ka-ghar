@@ -6,7 +6,7 @@ export interface Pad { x: number; z: number; hx: number; hz: number; margin: num
 
 export const START = { x: -0.6, z: 17.5, yaw: 0.04 }; // yaw 0 = looking toward -z
 
-export const POND = { x: 9, z: 4, rx: 11.5, rz: 7.2, rot: 0.18 };
+export const POND = { x: 16, z: 3, rx: 16, rz: 9.5, rot: 0.12 }; // enlarged 19 Nov
 
 export const FIRE_PIT = { x: -4.2, z: 4.6 };
 // Adirondack chairs around the fire pit (yaw = direction the sitter faces)
@@ -18,7 +18,7 @@ export const CHAIRS = [
 ];
 
 // dock runs from the north-east shore into the pond
-export const DOCK = { x: 14.2, z: -1.6, len: 6.5, w: 1.6, yaw: 0.35 }; // yaw: direction it points (0 = +z)
+export const DOCK = { x: 15, z: -5.2, len: 7.5, w: 1.6, yaw: 0.15 }; // yaw: direction it points (0 = +z)
 
 // split-rail fence between the meadow and the house lawn, with a gate on the path
 export const FENCE_MAIN = { z: -12, x0: -72, x1: 72, gateX: 0.5, gateW: 3.2 };
@@ -70,7 +70,7 @@ export const PATHS: { pts: [number, number][]; w: number }[] = [
   { pts: [[26, -46], [28, -70], [24, -88], [26, -100]], w: 0.6 },
   // to the fire pit and dock
   { pts: [[2.5, 16], [-1.5, 8], [-3.6, 6.5]], w: 0.55 },
-  { pts: [[0.5, -6], [8, -6], [12.5, -3.5]], w: 0.55 },
+  { pts: [[0.5, -6], [7, -8.6], [13.6, -7.8]], w: 0.55 },
 ];
 
 export const WALK_BOUND = { x: 0, z: -30, r: 132 };
