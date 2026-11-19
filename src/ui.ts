@@ -8,6 +8,7 @@ export interface UIHooks {
   setHour: (h: number) => void;
   cycle: { on: boolean; speed: number };
   setSound: (on: boolean) => void;
+  setRain: (on: boolean) => void;
   travel: (p: Place) => void;
   places: Place[];
   use: () => void;
@@ -43,6 +44,13 @@ export class UI {
   private slider!: HTMLInputElement;
   private cycleBtn!: HTMLButtonElement;
   private toastTimer = 0;
+  private rainBtn!: HTMLButtonElement;
+  raining = false;
+  toggleRain() {
+    this.raining = !this.raining;
+    this.rainBtn.textContent = this.raining ? 'Gentle rain' : 'Clear sky';
+    this.h.setRain(this.raining);
+  }
   started = false;
   isTouch: boolean;
 
@@ -93,7 +101,10 @@ export class UI {
       soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off';
       this.h.setSound(soundOn);
     });
-    top.append(this.clock, placesBtn, soundBtn);
+    const rainBtn = el('button', 'chip', 'Clear sky') as HTMLButtonElement;
+    this.rainBtn = rainBtn;
+    rainBtn.addEventListener('click', () => this.toggleRain());
+    top.append(this.clock, placesBtn, rainBtn, soundBtn);
     this.root.append(top);
 
     // time panel

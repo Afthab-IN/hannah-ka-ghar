@@ -83,6 +83,51 @@ export class Sound {
     return pn;
   }
 
+  /** Synthesised rain: soft pink noise with scattered drop ticks, looped. Returns a handle. */
+  rainLoop(): { setVolume(v: number, muffled: boolean): void } {
+    let gain: GainNode | null = null, filter: BiquadFilterNode | null = null;
+    let pending: [number, boolean] | null = null;
+    const start = () => {
+      if (!this.ctx || !this.master) return;
+      const ctx = this.ctx;
+      const len = ctx.sampleRate * 6;
+      const b = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = b.getChannelData(ch);
+        let b0 = 0, b1 = 0, b2 = 0;
+        for (let i = 0; i < len; i++) {
+          const w = Math.random() * 2 - 1;
+          b0 = 0.997 * b0 + w * 0.029; b1 = 0.985 * b1 + w * 0.032; b2 = 0.95 * b2 + w * 0.048;
+          d[i] = (b0 + b1 + b2 + w * 0.03) * 0.5;
+        }
+        // drops: tiny decaying ticks
+        for (let k = 0; k < 900; k++) {
+          const at = Math.floor(Math.random() * (len - 400)), amp = 0.05 + Math.random() * 0.12;
+          for (let j = 0; j < 300; j++) d[at + j] += amp * Math.exp(-j / 40) * (Math.random() * 2 - 1);
+        }
+        // crossfade the ends so the loop is seamless
+        const f = ctx.sampleRate * 0.25;
+        for (let i = 0; i < f; i++) { const a = i / f; d[i] = d[i] * a + d[len - f + i] * (1 - a); }
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = b; src.loop = true; src.loopEnd = 6 - 0.25;
+      filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 9000;
+      gain = ctx.createGain(); gain.gain.value = 0;
+      src.connect(filter).connect(gain).connect(this.master);
+      src.start();
+      if (pending) handle.setVolume(...pending);
+    };
+    const handle = {
+      setVolume: (v: number, muffled: boolean) => {
+        if (!gain || !filter || !this.ctx) { pending = [v, muffled]; if (this.ctx && !gain) start(); return; }
+        gain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.8);
+        filter.frequency.setTargetAtTime(muffled ? 900 : 9000, this.ctx.currentTime, 0.4);
+      },
+    };
+    if (this.ctx) start(); else this.pendingLoops.push(start);
+    return handle;
+  }
+
   private splashBuf: AudioBuffer | null = null;
   /** A small water splash, synthesised (decaying filtered noise with a plop). */
   splash(pos: THREE.Vector3, volume = 0.6) {

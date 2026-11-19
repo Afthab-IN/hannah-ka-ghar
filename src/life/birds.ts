@@ -108,7 +108,7 @@ export function buildBirds() {
     m4.compose(pos, q, s.setScalar(scale));
   };
   W.onUpdate((dt, t) => {
-    presence += ((U.uNight.value > 0.55 ? 0 : 1) - presence) * (1 - Math.exp(-dt * 0.5));
+    presence += ((U.uNight.value > 0.55 || U.uRain.value > 0.5 ? 0 : 1) - presence) * (1 - Math.exp(-dt * 0.5));
     // flock target wanders round a loop over the meadow, pond and house lawn
     const a = t * 0.07;
     center.set(Math.sin(a) * 34 + n(t * 0.02, 1) * 18, 11 + 6 * n(t * 0.05, 4) + (1 - presence) * 40, -10 + Math.cos(a * 1.3) * 26);

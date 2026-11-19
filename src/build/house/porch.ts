@@ -124,12 +124,12 @@ export function buildPorchLife(c: Ctx) {
   // two rocking chairs looking out over the meadow, a little table between
   const wallV = D.D2 + 0.1, PF = D.PORCH_FRONT;
   const rv = wallV + 0.62;
-  for (const u of [2.75, 4.0]) {
+  for (const u of [3.45, 4.75]) {
     if (c.fu.has('Rockingchair_01')) rockingModel(c.fu, X(u), FD, Z(rv), Math.PI);
     else rockingChair(X(u), FD, Z(rv), Math.PI);
   }
   {
-    const tx = X(3.38), tz = Z(rv - 0.1);
+    const tx = X(4.1), tz = Z(rv - 0.1);
     b.cyl(m.woodDark, tx, FD, tz, 0.04, 0.5, { seg: 8 });
     b.cyl(m.woodDark, tx, FD, tz, 0.17, 0.03, { seg: 12 });
     b.cyl(m.woodDark, tx, FD + 0.5, tz, 0.24, 0.035, { seg: 16 });
@@ -142,7 +142,7 @@ export function buildPorchLife(c: Ctx) {
 
   // hanging lantern in front of the door (comes on at dusk)
   {
-    const lu = 0.85, lv = wallV + 0.75;
+    const lu = D.DOOR_U + 0.85, lv = wallV + 0.75;
     const ceil = D.RT - 0.12 - D.RS * (lv - (D.D2 + 0.1));
     const y1 = F + 2.5, y0 = F + 2.16;
     b.cyl(m.iron, X(lu), y1, Z(lv), 0.006, ceil - y1, { seg: 5 });
@@ -168,21 +168,21 @@ export function buildPorchLife(c: Ctx) {
     const w = 1.1, h = 0.31;
     const yTop = D.BEAM_BOT - 0.1;
     for (const s of [-1, 1]) {
-      b.cyl(m.iron, X(s * 0.42), yTop - 0.01, Z(D.BEAM_V), 0.006, 0.12, { seg: 4 });
-      props.ball(X(s * 0.42), yTop, Z(D.BEAM_V), 0.014, 0.014, 0.014, '#2a2a2a');
+      b.cyl(m.iron, X(D.DOOR_U + s * 0.42), yTop - 0.01, Z(D.BEAM_V), 0.006, 0.12, { seg: 4 });
+      props.ball(X(D.DOOR_U + s * 0.42), yTop, Z(D.BEAM_V), 0.014, 0.014, 0.014, '#2a2a2a');
     }
-    atlas.box(X(0), yTop - h / 2, Z(D.BEAM_V), w, h, 0.035, [R.wood, R.wood, R.wood, R.wood, R.sign, R.signBack]);
+    atlas.box(X(D.DOOR_U), yTop - h / 2, Z(D.BEAM_V), w, h, 0.035, [R.wood, R.wood, R.wood, R.wood, R.sign, R.signBack]);
     // a little gooseneck barn light on the beam so the board reads after dark
     const gy = D.BEAM_TOP - 0.02, gv = D.BEAM_V + 0.09;
-    b.box(m.iron, X(0), gy - 0.04, Z(gv + 0.01), 0.05, 0.08, 0.02, { collide: false });
-    b.box(m.iron, X(0), gy + 0.02, Z(gv + 0.12), 0.018, 0.018, 0.24, { rotX: -0.35, collide: false });
-    b.cyl(m.iron, X(0), gy - 0.05, Z(gv + 0.25), 0.07, 0.06, { seg: 10, rTop: 0.02 });
-    const signLamp = W.lamps.add(new THREE.Vector3(X(0), gy - 0.1, Z(gv + 0.32)), '#ffd09a', 1.8, 2.6, { nightOnly: true });
-    shades.add(signLamp, new THREE.CylinderGeometry(0.05, 0.05, 0.01, 10).translate(X(0), gy - 0.055, Z(gv + 0.25)), 2.0);
+    b.box(m.iron, X(D.DOOR_U), gy - 0.04, Z(gv + 0.01), 0.05, 0.08, 0.02, { collide: false });
+    b.box(m.iron, X(D.DOOR_U), gy + 0.02, Z(gv + 0.12), 0.018, 0.018, 0.24, { rotX: -0.35, collide: false });
+    b.cyl(m.iron, X(D.DOOR_U), gy - 0.05, Z(gv + 0.25), 0.07, 0.06, { seg: 10, rTop: 0.02 });
+    const signLamp = W.lamps.add(new THREE.Vector3(X(D.DOOR_U), gy - 0.1, Z(gv + 0.32)), '#ffd09a', 1.8, 2.6, { nightOnly: true });
+    shades.add(signLamp, new THREE.CylinderGeometry(0.05, 0.05, 0.01, 10).translate(X(D.DOOR_U), gy - 0.055, Z(gv + 0.25)), 2.0);
   }
 
   // doormat, ferns by the door, pumpkins by the steps
-  props.box(X(0), FD + 0.006, Z(wallV + 0.38), 0.95, 0.012, 0.5, '#9a7b4f');
+  props.box(X(D.DOOR_U), FD + 0.006, Z(wallV + 0.38), 0.95, 0.012, 0.5, '#9a7b4f');
   const fern = (u: number, v: number) => {
     props.cyl(X(u), FD, Z(v), 0.19, 0.34, '#e9e4d8');
     props.cyl(X(u), FD + 0.34, Z(v), 0.205, 0.04, '#e9e4d8');
@@ -199,8 +199,8 @@ export function buildPorchLife(c: Ctx) {
     }
     W.physics.addCylinder(X(u), Z(v), 0.24, FD, FD + 0.6);
   };
-  fern(-0.92, wallV + 0.28);
-  fern(0.92, wallV + 0.28);
+  fern(D.DOOR_U - 0.92, wallV + 0.28);
+  fern(D.DOOR_U + 0.92, wallV + 0.28);
   const pumpkin = (u: number, v: number, r: number, col = '#d9772b') => {
     props.ball(X(u), FD + r * 0.68, Z(v), r, r * 0.7, r, col);
     props.cyl(X(u), FD + r * 1.3, Z(v), 0.018, 0.08, '#6b5a2e', 0, 0.2, 0.1);
@@ -208,9 +208,9 @@ export function buildPorchLife(c: Ctx) {
   pumpkin(1.42, PF - 0.42, 0.17);
   pumpkin(1.72, PF - 0.36, 0.12, '#e6a04a');
   pumpkin(1.55, PF - 0.68, 0.1, '#efe6d0');
-  pumpkin(-1.4, PF - 0.4, 0.15);
+  pumpkin(D.DOOR_U - 1.4, PF - 0.4, 0.15);
   W.physics.addCylinder(X(1.55), Z(PF - 0.48), 0.28, FD, FD + 0.3);
-  W.physics.addCylinder(X(-1.4), Z(PF - 0.4), 0.17, FD, FD + 0.3);
+  W.physics.addCylinder(X(D.DOOR_U - 1.4), Z(PF - 0.4), 0.17, FD, FD + 0.3);
 
   // a bench on the east porch
   {

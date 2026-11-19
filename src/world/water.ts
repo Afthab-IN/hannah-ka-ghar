@@ -136,6 +136,7 @@ export function buildPond(reflection: PlanarReflection) {
       uniform vec3 uLightDir;
       uniform vec3 uLightCol;
       uniform vec2 uWindDir;
+      uniform float uRain;
       ${ATMO_GLSL}
       varying float vDepth;
       varying vec3 vWPos;
@@ -156,6 +157,25 @@ export function buildPond(reflection: PlanarReflection) {
         float e = 0.08;
         float h0 = waves(p);
         vec3 N = normalize(vec3((h0 - waves(p + vec2(e, 0.0))) * 0.35, 1.0, (h0 - waves(p + vec2(0.0, e))) * 0.35));
+        // raindrop rings
+        if (uRain > 0.01) {
+          vec2 dsum = vec2(0.0);
+          for (int k = 0; k < 2; k++) {
+            vec2 q = p * (k == 0 ? 2.2 : 3.1) + float(k) * 7.3;
+            vec2 ci = floor(q);
+            for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+              vec2 cc = ci + vec2(float(i), float(j));
+              float hh = h21(cc);
+              vec2 cen = cc + vec2(h21(cc + 3.1), h21(cc + 5.7));
+              float ph = fract(uTime * 0.9 + hh);
+              vec2 dv = q - cen;
+              float dd = length(dv);
+              float ring = sin((dd - ph * 0.9) * 40.0) * smoothstep(0.08, 0.0, abs(dd - ph * 0.9)) * (1.0 - ph);
+              dsum += dv / max(dd, 1e-3) * ring;
+            }
+          }
+          N = normalize(N + vec3(dsum.x, 0.0, dsum.y) * 0.25 * uRain);
+        }
         vec3 V = normalize(cameraPosition - vWPos);
         float cosT = clamp(dot(N, V), 0.0, 1.0);
         float F = 0.03 + 0.97 * pow(1.0 - cosT, 5.0);

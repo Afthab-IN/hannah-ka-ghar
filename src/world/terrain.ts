@@ -344,6 +344,9 @@ export function buildTerrain(quality: 'low' | 'med' | 'high' = 'high'): THREE.Me
         normal = normalize((viewMatrix * vec4(normalize(mix(wN0, wN1, pm)), 0.0)).xyz);
       }
       roughnessFactor = mix(0.95, 0.6, (1.0 - smoothstep(0.0, 0.3, above)) * nearPond);
+      // wet after rain: darker ground, shiny paths
+      diffuseColor.rgb *= 1.0 - uRain * (0.22 + 0.18 * sp.r);
+      roughnessFactor = mix(roughnessFactor, 0.35 + 0.4 * (1.0 - sp.r), uRain * 0.8);
     }
     `,
   });

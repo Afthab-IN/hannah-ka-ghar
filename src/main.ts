@@ -7,6 +7,7 @@ import { buildSkyDome, TimeOfDay, SkyEnvironment } from './sky';
 import { buildPost, GRADE_PRESETS } from './post';
 import { Player } from './player';
 import { UI, type Place } from './ui';
+import { Rain } from './fx/rain';
 import { buildEverything, PLACES } from './scene';
 
 const params = new URLSearchParams(location.search);
@@ -94,6 +95,7 @@ async function init() {
     setHour: (h) => tod.setHour(h),
     cycle,
     setSound: (on) => W.audio.setEnabled(on),
+    setRain: (on) => { tod.rainTarget = on ? 0.85 : 0; ui.toast(on ? 'A gentle rain begins to fall' : 'The rain eases off'); },
     travel: (p: Place) => {
       if (player.mount) player.stand();
       player.place(p.x, p.z, p.yaw);
@@ -135,12 +137,15 @@ async function init() {
   document.addEventListener('pointerlockchange', () => ui.showPause(!document.pointerLockElement && player.active && !ui.panelOpen()));
   window.addEventListener('keydown', (e) => {
     if (e.code === 'KeyT' && player.active) { tod.setHour(tod.target + 1); }
+    if (e.code === 'KeyR' && player.active) ui.toggleRain();
   });
 
   // ambience beds
   const birds = W.audio.loop('birds_day', { volume: 0 });
   const wind = W.audio.loop('wind_meadow', { volume: 0.25 });
   const crickets = W.audio.loop('crickets_night', { volume: 0 });
+  const rainSnd = W.audio.rainLoop();
+  const rain = new Rain(quality === 'high' ? 5000 : quality === 'med' ? 3500 : 2200);
 
   // ---- resize ----
   const onResize = () => {
@@ -198,6 +203,7 @@ async function init() {
     // eyes adjust when you step inside
     const inside = indoorAtCPU(camera.position);
     indoorAdapt += (inside - indoorAdapt) * (1 - Math.exp(-dt * 2.2));
+    rain.indoor = indoorAdapt;
     renderer.toneMappingExposure = tod.state.exposure * (1 + indoorAdapt * (0.9 + 0.6 * U.uNight.value));
 
     player.update(dt);
@@ -220,8 +226,10 @@ async function init() {
     if (ambTimer <= 0) {
       ambTimer = 0.5;
       const night = U.uNight.value, day = U.uDay.value;
-      birds.setVolume(0.55 * day * (1 - night), 1.5);
-      crickets.setVolume(0.5 * night, 1.5);
+      const rn = U.uRain.value;
+      birds.setVolume(0.55 * day * (1 - night) * (1 - rn), 1.5);
+      rainSnd.setVolume(rn * (inside ? 0.45 : 0.7), inside > 0.5);
+      crickets.setVolume(0.5 * night * (1 - rn), 1.5);
       wind.setVolume(0.18 + 0.1 * night, 1.5);
     }
     // an owl in the oaks now and then after dark

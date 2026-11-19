@@ -26,6 +26,11 @@ function seat(sitLabel: string, at: THREE.Vector3, eye: THREE.Vector3, yaw: numb
 
 export function buildWing(c: Ctx) {
   const { b, m, props, atlas, shades } = c;
+  // layout below was drawn against a west face at u -6.9; shift it with the house
+  const du = -D.W2 - T / 2 + 6.9;
+  const dv = D.WING_V - 3.6; // the wing also got deeper: push the south group south
+  const Xw = (u: number) => X(u + du);
+  const P3w = (u: number, y: number, v: number) => P3(u + du, y, v);
   const bx = (mat: THREE.Material, u0: number, y0: number, v0: number, u1: number, y1: number, v1: number, collide: boolean | 'nowalk' = false) =>
     b.boxMinMax(mat, X(Math.min(u0, u1)), Math.min(y0, y1), Z(Math.min(v0, v1)), X(Math.max(u0, u1)), Math.max(y0, y1), Z(Math.max(v0, v1)), { collide });
   // white railing with balusters and a collider you cannot climb or jump over
@@ -94,20 +99,20 @@ export function buildWing(c: Ctx) {
   for (const sv of [-1, 1]) bx(m.trim, U0 - T / 2, top - 0.08, sv * (WV + T / 2), UE, A + 0.02, sv * (WV + T / 2 + 0.035));
   // furnishing: two armchairs looking out of the west windows, a table, a lamp, plants, a rug
   if (c.fu.has('ArmChair_01')) for (const v of [-0.85, 0.85]) {
-    const f = new Frame(X(-9.25), F, Z(v), Math.PI / 2);
+    const f = new Frame(Xw(-9.25), F, Z(v), Math.PI / 2);
     c.fu.add('ArmChair_01', f.x, f.y, f.z, f.yaw);
     f.solid(0.86, 1.0, 0.8);
     seat('Sit in the armchair', f.p(0, 0.5, 0), f.p(0, 1.12, 0.06), Math.PI / 2, f.p(0, 0, -0.75), 'Sitting in the sunroom');
   }
   {
-    const tx = X(-9.55), tz = Z(0);
+    const tx = Xw(-9.55), tz = Z(0);
     b.cyl(m.woodDark, tx, F, tz, 0.035, 0.55, { seg: 8 });
     b.cyl(m.woodDark, tx, F, tz, 0.15, 0.03, { seg: 14 });
     b.cyl(m.woodDark, tx, F + 0.55, tz, 0.24, 0.03, { seg: 16 });
     W.physics.addCylinder(tx, tz, 0.24, F, F + 0.6);
     props.cyl(tx - 0.08, F + 0.58, tz + 0.05, 0.04, 0.09, '#f2ede2');
     props.box(tx + 0.08, F + 0.595, tz - 0.06, 0.16, 0.03, 0.22, '#2f4a5e', 0.4);
-    const lx = X(-10.25), lz = Z(1.9);
+    const lx = Xw(-10.25), lz = Z(1.9);
     b.cyl(m.iron, lx, F, lz, 0.15, 0.025, { seg: 14 });
     b.cyl(m.iron, lx, F, lz, 0.014, 1.4, { seg: 6 });
     const lamp = W.lamps.add(new THREE.Vector3(lx, F + 1.42, lz), '#ffc98a', 2.6, 6.5, { on: true });
@@ -115,7 +120,7 @@ export function buildWing(c: Ctx) {
     W.physics.addCylinder(lx, lz, 0.16, F, F + 1.6);
     W.interact.add({ pos: new THREE.Vector3(lx, F + 1.42, lz), radius: 0.28, range: 2.6, label: () => (lamp.on ? 'Turn off the lamp' : 'Turn on the lamp'), onUse: () => { lamp.on = !lamp.on; } });
   }
-  atlas.rug(X(-9.0), F + 0.008, Z(0), 2.6, 2.2, R.rug1);
+  atlas.rug(Xw(-9.0), F + 0.008, Z(0), 2.6, 2.2, R.rug1);
   const bigPot = (u: number, v: number, y0: number, s = 1) => {
     props.cyl(X(u), y0, Z(v), 0.2 * s, 0.34 * s, '#a85c3a');
     for (let i = 0; i < 10; i++) {
@@ -137,7 +142,7 @@ export function buildWing(c: Ctx) {
   // keep heads clear of the main roof's rake where it comes down low at the ends
   for (const s of [-1, 1]) W.physics.addBox(X(UE - 0.5), TY, Z(s > 0 ? 2.8 : -rv), X(UE), TY + 2.5, Z(s > 0 ? rv : -2.8), { walk: false });
   // string lights: two iron poles at the west corners, strings to the gable and between the poles
-  const lightLamps = [W.lamps.add(P3(-9.4, TY + 2.0, 1.3), '#ffc887', 2.6, 6.5, { nightOnly: true }), W.lamps.add(P3(-9.4, TY + 2.0, -1.5), '#ffc887', 2.6, 6.5, { nightOnly: true })];
+  const lightLamps = [W.lamps.add(P3w(-9.4, TY + 2.0, 1.3), '#ffc887', 2.6, 6.5, { nightOnly: true }), W.lamps.add(P3w(-9.4, TY + 2.0, -1.5), '#ffc887', 2.6, 6.5, { nightOnly: true })];
   const poleH = 2.45;
   for (const s of [-1, 1]) {
     b.cyl(m.iron, X(ru0 + 0.12), TY, Z(s * (rv - 0.12)), 0.025, poleH, { seg: 6 });
@@ -167,7 +172,7 @@ export function buildWing(c: Ctx) {
   for (const s of [-1, 1]) bx(m.iron, UE - 0.08, gH - 0.02, s * 1.2 - 0.02, UE, gH + 0.02, s * 1.2 + 0.02);
   bulbs.forEach((list, i) => { if (list.length) shades.add(lightLamps[i], mergeGeometries(list, false)!, 1.1); });
   // lanterns on the deck
-  for (const [u, v, li] of [[-10.35, 2.95, 0], [-7.45, -3.05, 1]] as [number, number, number][]) {
+  for (const [u, v, li] of [[-10.35 + du, 2.95 + dv, 0], [-7.45 + du, -3.05 - dv, 1]] as [number, number, number][]) {
     bx(m.iron, u - 0.11, TY, v - 0.11, u + 0.11, TY + 0.04, v + 0.11);
     bx(m.iron, u - 0.11, TY + 0.4, v - 0.11, u + 0.11, TY + 0.44, v + 0.11);
     for (const [du, dv] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) bx(m.iron, u + du * 0.1 - 0.01, TY, v + dv * 0.1 - 0.01, u + du * 0.1 + 0.01, TY + 0.44, v + dv * 0.1 + 0.01);
@@ -175,7 +180,7 @@ export function buildWing(c: Ctx) {
   }
   // seating: a loveseat and two chairs round a low coffee table (south half)
   {
-    const f = new Frame(X(-8.95), TY, Z(2.85), 0);
+    const f = new Frame(Xw(-8.95), TY, Z(2.85 + dv), 0);
     const w = 1.5;
     f.box(b, m.woodLight, 0, 0.2, 0, w, 0.06, 0.72);
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.box(b, m.woodLight, sx * (w / 2 - 0.05), 0.1, sz * 0.31, 0.06, 0.2, 0.06);
@@ -188,19 +193,19 @@ export function buildWing(c: Ctx) {
     f.solid(w, 0.85, 0.75);
     seat('Sit on the loveseat', f.p(0.3, 0.45, 0), f.p(0.3, 1.02, 0.05), 0, f.p(0.3, 0, -0.8), 'Sitting under the sky', { yawRange: 2.0 });
     // coffee table with a pot of coffee and two mugs
-    const t = new Frame(X(-8.95), TY, Z(1.85), 0);
+    const t = new Frame(Xw(-8.95), TY, Z(1.85 + dv), 0);
     t.box(b, m.woodDark, 0, 0.4, 0, 0.9, 0.04, 0.5);
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) t.box(b, m.woodDark, sx * 0.39, 0.19, sz * 0.19, 0.04, 0.38, 0.04);
     t.box(b, m.woodDark, 0, 0.12, 0, 0.82, 0.02, 0.42);
     t.solid(0.9, 0.42, 0.5);
     const tt = TY + 0.42;
-    props.cyl(X(-9.2), tt, Z(1.85), 0.075, 0.2, '#2f3a40');
-    props.cyl(X(-9.2), tt + 0.2, Z(1.85), 0.04, 0.04, '#2a2a2a');
-    props.box(X(-9.12), tt + 0.17, Z(1.85), 0.06, 0.025, 0.025, '#2f3a40', 0, 0, -0.5);
-    for (const [u, v] of [[-8.85, 1.75], [-8.7, 1.95]]) { props.cyl(X(u), tt, Z(v), 0.04, 0.09, '#f2ede2'); props.cyl(X(u), tt + 0.075, Z(v), 0.034, 0.005, '#4a2e1c'); }
-    props.box(X(-8.65), tt + 0.012, Z(1.72), 0.15, 0.025, 0.21, '#7a2e25', 0.3);
+    props.cyl(Xw(-9.2), tt, Z(1.85 + dv), 0.075, 0.2, '#2f3a40');
+    props.cyl(Xw(-9.2), tt + 0.2, Z(1.85 + dv), 0.04, 0.04, '#2a2a2a');
+    props.box(Xw(-9.12), tt + 0.17, Z(1.85 + dv), 0.06, 0.025, 0.025, '#2f3a40', 0, 0, -0.5);
+    for (const [u, v] of [[-8.85 + du, 1.75 + dv], [-8.7 + du, 1.95 + dv]]) { props.cyl(X(u), tt, Z(v), 0.04, 0.09, '#f2ede2'); props.cyl(X(u), tt + 0.075, Z(v), 0.034, 0.005, '#4a2e1c'); }
+    props.box(Xw(-8.65), tt + 0.012, Z(1.72 + dv), 0.15, 0.025, 0.21, '#7a2e25', 0.3);
     W.interact.add({
-      pos: P3(-9.2, tt + 0.1, 1.85), radius: 0.2, range: 2.2, label: 'Pour a cup of coffee',
+      pos: P3w(-9.2, tt + 0.1, 1.85 + dv), radius: 0.2, range: 2.2, label: 'Pour a cup of coffee',
       onUse: () => {
         const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.036, 0.09, 12), M.paint('#f2ede2', 0.4));
         W.hold(mug, 'a cup of coffee');
@@ -208,8 +213,8 @@ export function buildWing(c: Ctx) {
       },
     });
     // two cushioned chairs either side of the table
-    for (const [u, yaw] of [[-10.1, -Math.PI / 2], [-7.8, Math.PI / 2]] as [number, number][]) {
-      const cf = new Frame(X(u), TY, Z(1.85), yaw);
+    for (const [u, yaw] of [[-10.1 + du, -Math.PI / 2], [-7.8 + du, Math.PI / 2]] as [number, number][]) {
+      const cf = new Frame(X(u), TY, Z(1.85 + dv), yaw);
       cf.box(b, m.woodLight, 0, 0.4, 0, 0.56, 0.05, 0.54);
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) cf.box(b, m.woodLight, sx * 0.24, 0.2, sz * 0.23, 0.05, 0.4, 0.05);
       for (const sx of [-1, 1]) cf.box(b, m.woodLight, sx * 0.27, 0.62, 0, 0.05, 0.04, 0.56);
@@ -222,7 +227,7 @@ export function buildWing(c: Ctx) {
   }
   // two loungers for lying back under the stars (north half), a blanket on one
   for (const [v, blanket] of [[-1.85, true], [-2.85, false]] as [number, boolean][]) {
-    const u0 = -10.55, u1 = -8.6, w = 0.72, y = TY;
+    const u0 = -10.55 + du, u1 = -8.6 + du, w = 0.72, y = TY;
     bx(m.woodLight, u0, y + 0.22, v - w / 2, u1, y + 0.27, v + w / 2);
     for (const uu of [u0 + 0.06, u1 - 0.06]) for (const s of [-1, 1]) bx(m.woodLight, uu - 0.03, y, v + s * (w / 2 - 0.05) - 0.03, uu + 0.03, y + 0.22, v + s * (w / 2 - 0.05) + 0.03);
     bx(m.linen, u0 + 0.04, y + 0.27, v - w / 2 + 0.04, u1 - 0.55, y + 0.34, v + w / 2 - 0.04);
@@ -239,7 +244,7 @@ export function buildWing(c: Ctx) {
   bigPot(ru0 + 0.35, rv - 0.4, TY, 0.9);
   bigPot(UE - 0.45, rv - 0.4, TY, 1.0);
   bigPot(ru0 + 0.35, -rv + 0.4, TY, 0.85);
-  for (const [u, v] of [[-7.4, 0.95], [-7.4, -0.95]]) {
+  for (const [u, v] of [[-7.4 + du, 0.95], [-7.4 + du, -0.95]]) {
     props.cyl(X(u), TY, Z(v), 0.14, 0.24, '#b8664a');
     for (let i = 0; i < 7; i++) props.ball(X(u + (rnd() - 0.5) * 0.2), TY + 0.3 + rnd() * 0.15, Z(v + (rnd() - 0.5) * 0.2), 0.07, 0.06, 0.07, ['#e8a0a8', '#f2c230', '#5f8a45', '#8e5cc4'][i % 4]);
     W.physics.addCylinder(X(u), Z(v), 0.16, TY, TY + 0.45);

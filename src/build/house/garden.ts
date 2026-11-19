@@ -20,7 +20,7 @@ export function buildGarden(b: Builder, m: HouseMats) {
   const depth = 0.95;
   const beds: Bed[] = [
     // west of the steps
-    { u0: -D.W2 - 0.1, u1: -1.22, v0: PF + 0.04, v1: PF + 0.04 + depth, along: 'x', seed: 11 },
+    { u0: -D.W2 - 0.1, u1: D.DOOR_U - 1.22, v0: PF + 0.04, v1: PF + 0.04 + depth, along: 'x', seed: 11 },
     // east of the steps (a gap by the steps is left for Chai the cat)
     { u0: 2.1, u1: PE + 0.04, v0: PF + 0.04, v1: PF + 0.04 + depth, along: 'x', seed: 23 },
     // down the east side of the porch

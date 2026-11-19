@@ -31,15 +31,16 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   const hole = (c: number, w: number, y0: number, y1: number, start: number): Hole => ({ u0: c - w / 2 - start, u1: c + w / 2 - start, y0: y0 - YB, y1: y1 - YB });
   const WIN = { w: 0.95, y0: F + 0.8, y1: F + 2.4 }; // tall double-hung
   const DOOR_H = 2.18;
-  const frontWins = [-4.6, -2.0, 2.0, 4.6];
+  const frontWins = [-5.6, -2.6, 2.6, 5.6];
   wall(b, {
     a: [X(-W2 - 0.1), Z(D2)], b: [X(W2 + 0.1), Z(D2)], y: YB, h: hEave, t: T, outer: m.siding, inner: m.plaster, outSide: -1,
-    holes: [hole(0, 1.02, F, F + DOOR_H, -W2 - 0.1), ...frontWins.map((u) => hole(u, WIN.w, WIN.y0, WIN.y1, -W2 - 0.1))],
+    holes: [hole(D.DOOR_U, 1.02, F, F + DOOR_H, -W2 - 0.1), ...frontWins.map((u) => hole(u, WIN.w, WIN.y0, WIN.y1, -W2 - 0.1))],
   });
   const backWins = [
-    { u: -4.7, w: 0.7, y0: F + 1.35, y1: F + 2.25, mun: [2, 2] as [number, number] }, // bathroom
-    { u: 1.8, w: 0.95, y0: WIN.y0, y1: WIN.y1, mun: [3, 4] as [number, number] }, // dining
-    { u: 4.9, w: 1.0, y0: F + 1.08, y1: F + 2.25, mun: [3, 2] as [number, number] }, // kitchen sink
+    { u: -5.8, w: 0.7, y0: F + 1.35, y1: F + 2.25, mun: [2, 2] as [number, number] }, // bathroom
+    { u: 0.4, w: 0.95, y0: WIN.y0, y1: WIN.y1, mun: [3, 4] as [number, number] }, // dining
+    { u: 6.8, w: 0.95, y0: WIN.y0, y1: WIN.y1, mun: [3, 4] as [number, number] }, // study
+    { u: 3.6, w: 1.0, y0: F + 1.08, y1: F + 2.25, mun: [3, 2] as [number, number] }, // kitchen sink
   ];
   wall(b, {
     a: [X(-W2 - 0.1), Z(-D2)], b: [X(W2 + 0.1), Z(-D2)], y: YB, h: hEave, t: T, outer: m.siding, inner: m.plaster, outSide: 1,
@@ -49,9 +50,9 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   const L = 2 * IZ;
   const hE = D.roofUnder(IZ) - YB;
   const AT = { w: 0.75, y0: A + 1.15, y1: A + 2.1 }; // attic windows
-  const upBathW = { v: -1.9, w: 0.7, y0: A + 1.15, y1: A + 2.05 }; // upstairs bathroom window over the tub
-  const kWin = { v: -2.4, w: 0.9, y0: F + 1.08, y1: F + 2.25 };
-  const eastAttic = [-1.7]; // the south one became the balcony door
+  const upBathW = { v: -2.4, w: 0.7, y0: A + 1.15, y1: A + 2.05 }; // upstairs bathroom window over the tub
+  const kWin = { v: -2.8, w: 0.95, y0: WIN.y0, y1: WIN.y1 }; // study window
+  const eastAttic = [-2.1]; // the south one became the balcony door
   const sunD = { v0: D.SUN_DOOR_V - 0.5, v1: D.SUN_DOOR_V + 0.5, h: 2.12 };
   const tD = { v0: D.TDOOR_V - 0.5, v1: D.TDOOR_V + 0.5, h: 2.1 };
   const bD = { v0: D.BAL_DOOR_V - 0.5, v1: D.BAL_DOOR_V + 0.5, h: 2.0 };
@@ -73,7 +74,7 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   wall(b, {
     a: [X(W2), Z(-IZ)], b: [X(W2), Z(IZ)], y: YB, h: hE, t: T, outer: m.siding, inner: m.plaster, outSide: 1, collide: false,
     outline: gableOutline(L, hE, RISE * (IZ / D2)),
-    holes: [hole(2.4, WIN.w, WIN.y0, WIN.y1, -IZ), hole(kWin.v, kWin.w, kWin.y0, kWin.y1, -IZ), ...eastAttic.map((v) => hole(v, AT.w, AT.y0, AT.y1, -IZ)), hole(D.BAL_DOOR_V, 1.0, D.BAL_Y, D.BAL_Y + bD.h, -IZ)],
+    holes: [hole(2.8, WIN.w, WIN.y0, WIN.y1, -IZ), hole(kWin.v, kWin.w, kWin.y0, kWin.y1, -IZ), ...eastAttic.map((v) => hole(v, AT.w, AT.y0, AT.y1, -IZ)), hole(D.BAL_DOOR_V, 1.0, D.BAL_Y, D.BAL_Y + bD.h, -IZ)],
   });
   gableCols(W2, [{ v0: bD.v0, v1: bD.v1, y0: D.BAL_Y, y1: D.BAL_Y + bD.h }]);
   // corner boards and the frieze under the eaves
@@ -91,7 +92,7 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   const ay = (AT.y0 + AT.y1) / 2, ah = AT.y1 - AT.y0;
   for (const u of frontWins) win(u, D2, wy, WIN.w, wh, [0, 1], [3, 4], true);
   for (const w of backWins) win(w.u, -D2, (w.y0 + w.y1) / 2, w.w, w.y1 - w.y0, [0, -1], w.mun, false);
-  win(W2, 2.4, wy, WIN.w, wh, [1, 0], [3, 4], true);
+  win(W2, 2.8, wy, WIN.w, wh, [1, 0], [3, 4], true);
   win(-W2, upBathW.v, (upBathW.y0 + upBathW.y1) / 2, upBathW.w, upBathW.y1 - upBathW.y0, [-1, 0], [2, 3], false);
   win(W2, kWin.v, (kWin.y0 + kWin.y1) / 2, kWin.w, kWin.y1 - kWin.y0, [1, 0], [3, 2], true);
   for (const v of eastAttic) win(W2, v, ay, AT.w, ah, [1, 0], [2, 3], false);
@@ -99,7 +100,7 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   // ---------------------------------------------------------------- interior walls
   const pl = m.plaster;
   const DW = D.DOOR_W;
-  const bedDoor = { v0: 0.45, v1: 0.45 + DW }, bathDoor = { v0: -0.45 - DW, v1: -0.45 };
+  const bedDoor = { v0: 0.6, v1: 0.6 + DW }, bathDoor = { v0: -2.95, v1: -2.95 + DW };
   // west wing wall (hall side), with the bedroom and bathroom doors
   wall(b, {
     a: [X(WU), Z(-IZ)], b: [X(WU), Z(IZ)], y: F, h: CEIL, t: TI, outer: pl, inner: pl, outSide: 1,
@@ -109,8 +110,10 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   // the fireplace wall between the living room and the kitchen, with a wide cased opening
   wall(b, {
     a: [X(D.FW_U0), Z(0)], b: [X(IX), Z(0)], y: F, h: CEIL, t: TI, outer: pl, inner: pl, outSide: 1,
-    holes: [{ u0: D.CASE_U0 - D.FW_U0, u1: D.CASE_U1 - D.FW_U0, y0: 0, y1: 2.35 }],
+    holes: [{ u0: D.CASE_U0 - D.FW_U0, u1: D.CASE_U1 - D.FW_U0, y0: 0, y1: 2.35 }, { u0: D.STUDY_DOOR_U - 0.5 - D.FW_U0, u1: D.STUDY_DOOR_U + 0.5 - D.FW_U0, y0: 0, y1: 2.12 }],
   });
+  // the study, behind the fireplace wall in the back east corner
+  wall(b, { a: [X(D.STUDY_U), Z(-IZ)], b: [X(D.STUDY_U), Z(-TI / 2)], y: F, h: CEIL, t: TI, outer: pl, inner: pl, outSide: 1 });
   // door linings and casings: along 'x' = wall runs along x at v = c
   const opening = (along: 'x' | 'z', c: number, s0: number, s1: number, h: number, t: number) => {
     const cw = 0.09, ct = 0.022;
@@ -150,7 +153,8 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
       B(s0 - cw - 0.02, y0 + h, f, s1 + cw + 0.02, y0 + h + cw + 0.03, f + sd * (ct + 0.008));
     }
   };
-  opening('x', D2, -0.51, 0.51, DOOR_H, T); // front door
+  opening('x', D2, D.DOOR_U - 0.51, D.DOOR_U + 0.51, DOOR_H, T); // front door
+  opening('x', 0, D.STUDY_DOOR_U - 0.5, D.STUDY_DOOR_U + 0.5, 2.12, TI); // study
   opening('x', -D2, BACK_DOOR_U - 0.49, BACK_DOOR_U + 0.49, DOOR_H, T); // back door
   opening('z', WU, bedDoor.v0, bedDoor.v1, 2.12, TI);
   opening('z', WU, bathDoor.v0, bathDoor.v1, 2.12, TI);
@@ -158,7 +162,7 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   // the open west end of the fireplace wall gets a cased post
   bx(m.trim, D.FW_U0 - 0.03, F, -TI / 2 - 0.03, D.FW_U0 + 0.1, F + CEIL, TI / 2 + 0.03);
   // thresholds
-  bx(m.woodDark, -0.51, F - 0.03, D2 - 0.1, 0.51, F + 0.012, D2 + 0.16, true);
+  bx(m.woodDark, D.DOOR_U - 0.51, F - 0.03, D2 - 0.1, D.DOOR_U + 0.51, F + 0.012, D2 + 0.16, true);
   bx(m.woodDark, BACK_DOOR_U - 0.49, F - 0.03, -D2 - 0.16, BACK_DOOR_U + 0.49, F + 0.012, -D2 + 0.1, true);
   // baseboards: [u0, v0, u1, v1] along wall faces, skipping openings
   const base = (u0: number, v0: number, u1: number, v1: number) => bx(m.trim, u0, F, v0, u1, F + 0.14, v1);
@@ -173,24 +177,27 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
     if (v1 > a) base(u, a, u + side * 0.02, v1);
   };
   const cw = 0.1;
-  runX(IZ, -1, -IX, IX, [[-0.51 - cw, 0.51 + cw], [WU - TI / 2, WU + TI / 2]]); // front wall
+  runX(IZ, -1, -IX, IX, [[D.DOOR_U - 0.51 - cw, D.DOOR_U + 0.51 + cw], [WU - TI / 2, WU + TI / 2]]); // front wall
   runX(-IZ, 1, WU + TI / 2, IX, [[BACK_DOOR_U - 0.49 - cw, BACK_DOOR_U + 0.49 + cw]]); // back wall, hall + kitchen
   runZ(-IX, 1, BBV + TI / 2, IZ); // bedroom west wall
   runZ(IX, -1, -IZ, IZ, [[-TI / 2, TI / 2]]); // east wall
   runX(BBV + TI / 2, 1, -IX, WU - TI / 2); // bedroom north wall
   runZ(WU - TI / 2, -1, BBV + TI / 2, IZ, [[bedDoor.v0 - cw, bedDoor.v1 + cw]]); // bedroom east wall
   runZ(WU + TI / 2, 1, -IZ, IZ, [[bedDoor.v0 - cw, bedDoor.v1 + cw], [bathDoor.v0 - cw, bathDoor.v1 + cw]]); // hall side
-  runX(TI / 2, 1, D.FW_U0, IX, [[1.95, 3.85], [D.CASE_U0 - cw, D.CASE_U1 + cw]]); // living side of the fireplace wall
-  runX(-TI / 2, -1, D.FW_U0, IX, [[D.CASE_U0 - cw, D.CASE_U1 + cw]]); // kitchen side
+  runX(TI / 2, 1, D.FW_U0, IX, [[D.FP_U - 0.95, D.FP_U + 0.95], [D.CASE_U0 - cw, D.CASE_U1 + cw], [D.STUDY_DOOR_U - 0.5 - cw, D.STUDY_DOOR_U + 0.5 + cw]]); // living side of the fireplace wall
+  runX(-TI / 2, -1, D.FW_U0, D.STUDY_U - TI / 2, [[D.CASE_U0 - cw, D.CASE_U1 + cw]]);
+  runX(-TI / 2, -1, D.STUDY_U + TI / 2, IX, [[D.STUDY_DOOR_U - 0.5 - cw, D.STUDY_DOOR_U + 0.5 + cw]]);
+  runZ(D.STUDY_U + TI / 2, 1, -IZ, -TI / 2); runZ(D.STUDY_U - TI / 2, -1, -IZ, -TI / 2); // kitchen side
 
   // ---------------------------------------------------------------- doors
   const doors: Door[] = [];
   const doorPaint = M.paint('#76502f', 0.55);
   const white = M.paint('#efece3', 0.5);
-  doors.push(makeDoor({ hinge: new THREE.Vector3(X(0.5), F + 0.012, Z(D2)), w: 1.0, h: 2.16, dir: [-1, 0], swing: -1, mat: doorPaint, glass: M.glass(0.6), name: 'front door' }));
+  doors.push(makeDoor({ hinge: new THREE.Vector3(X(D.DOOR_U + 0.5), F + 0.012, Z(D2)), w: 1.0, h: 2.16, dir: [-1, 0], swing: -1, mat: doorPaint, glass: M.glass(0.6), name: 'front door' }));
   doors.push(makeDoor({ hinge: new THREE.Vector3(X(BACK_DOOR_U - 0.48), F + 0.012, Z(-D2)), w: 0.96, h: 2.16, dir: [1, 0], swing: -1, mat: doorPaint, glass: M.glass(0.6), name: 'back door' }));
   doors.push(makeDoor({ hinge: new THREE.Vector3(X(WU), F, Z(bedDoor.v0 + 0.01)), w: DW - 0.02, h: 2.1, dir: [0, 1], swing: -1, mat: white, name: 'bedroom door' }));
   doors.push(makeDoor({ hinge: new THREE.Vector3(X(WU), F, Z(bathDoor.v1 - 0.01)), w: DW - 0.02, h: 2.1, dir: [0, -1], swing: 1, mat: white, name: 'bathroom door' }));
+  doors.push(makeDoor({ hinge: new THREE.Vector3(X(D.STUDY_DOOR_U + 0.49), F, Z(0)), w: DW - 0.02, h: 2.1, dir: [-1, 0], swing: -1, mat: white, name: 'study door' }));
 
   // ---------------------------------------------------------------- ceiling / attic floor
   const slab = (u0: number, v0: number, u1: number, v1: number) => {
@@ -204,7 +211,7 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   slab(ST_U1, ST_TOP_V, IX, SO_V1);
   // ceiling joists across the hall and the great room
   for (let u = 0.2; u <= IX - 0.3; u += 1.3) {
-    const breast = u > 1.95 && u < 3.85;
+    const breast = u > D.FP_U - 0.95 && u < D.FP_U + 0.95;
     if (u < D.FW_U0 - 0.1) bx(m.woodDark, u - 0.06, F + CEIL - 0.15, -IZ, u + 0.06, F + CEIL, IZ);
     else {
       bx(m.woodDark, u - 0.06, F + CEIL - 0.15, breast ? 0.66 : TI / 2, u + 0.06, F + CEIL, IZ);
@@ -277,7 +284,7 @@ export function buildShell(b: Builder, m: HouseMats, props: Props) {
   }
   const tieY = A + 2.75;
   const tieV = D2 * (1 - (tieY + 0.16 - P) / RISE) + 0.01; // ends where the tie's top meets the slope
-  for (const u of [-6.0, -4.6, -2.2, -0.8, 0.8, 4.4, 5.8]) bx(m.woodDark, u - 0.06, tieY, -tieV, u + 0.06, tieY + 0.16, tieV);
+  for (const u of [-7.4, -5.8, -3.8, -0.4, 1.0, 3.6, 5.2, 6.8]) bx(m.woodDark, u - 0.06, tieY, -tieV, u + 0.06, tieY + 0.16, tieV);
   // the upstairs bathroom: the north west corner of the attic, behind a partition (to the roof) and a
   // hall wall under the ridge; the rest of the west end is a landing in front of the terrace door
   {
@@ -379,13 +386,13 @@ function buildPorch(bx: Bx, b: Builder, m: HouseMats) {
   // skirting: dark void behind white lattice
   const ly0 = G - 0.08, ly1 = FD - 0.27;
   const sw = 0.95; // steps half width
-  bx(m.black, -wallU + 0.04, ly0, PF - 0.08, -sw, ly1, PF - 0.05);
-  bx(m.black, sw, ly0, PF - 0.08, PE - 0.06, ly1, PF - 0.05);
+  bx(m.black, -wallU + 0.04, ly0, PF - 0.08, D.DOOR_U - sw, ly1, PF - 0.05);
+  bx(m.black, D.DOOR_U + sw, ly0, PF - 0.08, PE - 0.06, ly1, PF - 0.05);
   bx(m.black, PE - 0.08, ly0, -wallV + 0.03, PE - 0.05, ly1, PF - 0.06);
   bx(m.black, -wallU + 0.03, ly0, wallV, -wallU + 0.06, ly1, PF - 0.06);
   bx(m.black, wallU, ly0, -wallV + 0.03, PE - 0.06, ly1, -wallV + 0.06);
-  lattice(b, m.trim, 'x', Z(PF - 0.02), X(-wallU), X(-sw), ly0, ly1);
-  lattice(b, m.trim, 'x', Z(PF - 0.02), X(sw), X(PE), ly0, ly1);
+  lattice(b, m.trim, 'x', Z(PF - 0.02), X(-wallU), X(D.DOOR_U - sw), ly0, ly1);
+  lattice(b, m.trim, 'x', Z(PF - 0.02), X(D.DOOR_U + sw), X(PE), ly0, ly1);
   lattice(b, m.trim, 'z', X(PE - 0.02), Z(-wallV), Z(PF), ly0, ly1);
   lattice(b, m.trim, 'z', X(-wallU + 0.02), Z(wallV), Z(PF), ly0, ly1);
   lattice(b, m.trim, 'x', Z(-wallV + 0.02), X(wallU), X(PE), ly0, ly1);
@@ -395,7 +402,8 @@ function buildPorch(bx: Bx, b: Builder, m: HouseMats) {
   // evenly spaced posts, a pair either side of the steps
   const span = (a: number, c: number, n: number) => Array.from({ length: n + 1 }, (_, i) => a + ((c - a) * i) / n);
   const westEnd = -W2 + 0.05, backEnd = -D2 + 0.05;
-  const frontPosts = [...span(westEnd, -1.05, Math.max(1, Math.round((-1.05 - westEnd) / 2.1))), ...span(1.05, BU, Math.max(1, Math.round((BU - 1.05) / 2.1)))];
+  const sl = D.DOOR_U - 1.05, sr = D.DOOR_U + 1.05;
+  const frontPosts = [...span(westEnd, sl, Math.max(1, Math.round((sl - westEnd) / 2.1))), ...span(sr, BU, Math.max(1, Math.round((BU - sr) / 2.1)))];
   const eastPosts = span(BV, backEnd, Math.max(1, Math.round((BV - backEnd) / 2.3))).slice(1);
   const post = (u: number, v: number) => {
     bx(m.trim, u - 0.075, FD, v - 0.075, u + 0.075, D.BEAM_BOT, v + 0.075, 'nowalk');
@@ -437,7 +445,7 @@ function buildPorch(bx: Bx, b: Builder, m: HouseMats) {
   };
   for (let i = 0; i < frontPosts.length - 1; i++) {
     const a = frontPosts[i], c = frontPosts[i + 1];
-    if (Math.abs(a + 1.05) < 1e-6) continue; // the steps
+    if (Math.abs(a - sl) < 1e-6) continue; // the steps
     railing(a + 0.075, BV, c - 0.075, BV);
   }
   const eastAll = [BV, ...eastPosts];
@@ -447,9 +455,9 @@ function buildPorch(bx: Bx, b: Builder, m: HouseMats) {
 
   // front steps down to the path (the last riser is the deck edge)
   const stepsZ = PF + 0.9;
-  stairs(b, { x: X(0), z: Z(stepsZ), dir: [0, -1], w: 2 * sw, y0: G - 0.02, y1: FD, run: 0.3, mat: m.deck, riserMat: m.trim, stringer: null });
+  stairs(b, { x: X(D.DOOR_U), z: Z(stepsZ), dir: [0, -1], w: 2 * sw, y0: G - 0.02, y1: FD, run: 0.3, mat: m.deck, riserMat: m.trim, stringer: null });
   for (const s of [-1, 1]) {
-    const u = s * 1.03;
+    const u = D.DOOR_U + s * 1.03;
     bx(m.trim, u - 0.06, G - 0.05, stepsZ - 0.14, u + 0.06, G + 1.0, stepsZ - 0.02, 'nowalk');
     bx(m.trim, u - 0.075, G + 1.0, stepsZ - 0.155, u + 0.075, G + 1.05, stepsZ - 0.005);
     // sloped handrail from the post down to the newel, over a sloped string board

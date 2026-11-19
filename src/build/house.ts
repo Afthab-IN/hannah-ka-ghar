@@ -22,12 +22,13 @@ import { loadFurniture, Furniture } from './house/furniture';
 const { X, Z, F, A, G } = D;
 
 export const HOUSE_PLACES: { name: string; x: number; z: number; yaw: number; y?: number }[] = [
-  { name: 'Living room', x: X(5.4), z: Z(3.9), yaw: Math.atan2(2.5, 3.24), y: F },
-  { name: 'Kitchen', x: X(3.9), z: Z(-0.8), yaw: 0.55, y: F },
-  { name: 'Bathroom', x: X(D.WING_U - 0.55), z: Z(-0.95), yaw: Math.PI / 2 + 0.35, y: F },
-  { name: 'Attic bedroom', x: X(1.6), z: Z(-1.9), yaw: Math.atan2(-4.4, -1.9), y: A },
-  { name: 'Upstairs bathroom', x: X(D.AB_U - 0.6), z: Z(0.15), yaw: Math.PI / 2 + 0.1, y: A },
-  { name: 'Rooftop terrace', x: X(-7.9), z: Z(0.3), yaw: Math.PI / 2, y: A },
+  { name: 'Living room', x: X(6.6), z: Z(4.6), yaw: Math.atan2(4.3, 3.9), y: F },
+  { name: 'Kitchen', x: X(4.3), z: Z(-0.8), yaw: 0.9, y: F },
+  { name: 'Study', x: X(6.9), z: Z(-0.9), yaw: 0.6, y: F },
+  { name: 'Bathroom', x: X(D.WING_U - 0.55), z: Z(-2.45), yaw: Math.PI / 2 + 0.35, y: F },
+  { name: 'Attic bedroom', x: X(2.2), z: Z(-2.2), yaw: Math.atan2(-5.8, -2.2), y: A },
+  { name: 'Upstairs bathroom', x: X(D.UPBATH_DOOR_U), z: Z(-1.4), yaw: Math.PI / 2 - 0.3, y: A },
+  { name: 'Rooftop terrace', x: X(-D.W2 - 1.2), z: Z(0.3), yaw: Math.PI / 2, y: A },
   { name: 'Balcony', x: X(D.W2 + 0.45), z: Z(D.BAL_DOOR_V), yaw: -Math.PI / 2, y: D.BAL_Y },
   { name: 'Back door', x: X(D.BACK_DOOR_U), z: Z(-D.D2 - 2.8), yaw: Math.PI, y: G },
 ];

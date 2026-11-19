@@ -295,7 +295,7 @@ export function buildInterior(c: Ctx) {
 
   // sofa facing the fire, a coffee table, an armchair either side
   {
-    const f = new Frame(X(FPU), F, Z(2.95), 0);
+    const f = new Frame(X(FPU), F, Z(3.25), 0);
     if (c.fu.has('Sofa_01')) {
       model(c, 'Sofa_01', f);
       const cush = (lx: number, col: string) => { const p = f.p(lx, 0.55, 0.1); props.ball(p.x, p.y, p.z, 0.17, 0.155, 0.055, col, f.yaw, -0.3); };
@@ -310,7 +310,7 @@ export function buildInterior(c: Ctx) {
     seat('Sit on the sofa', f.p(0.35, 0.5, 0), f.p(0.35, 1.08, 0.04), 0, f.p(0.35, 0, -0.72));
   }
   {
-    const f = new Frame(X(FPU), F, Z(1.85), 0);
+    const f = new Frame(X(FPU), F, Z(2.08), 0);
     let top = F + 0.44;
     if (c.fu.has('CoffeeTable_01')) {
       const sc = 0.78, sz = c.fu.size('CoffeeTable_01');
@@ -318,21 +318,21 @@ export function buildInterior(c: Ctx) {
       top = F + sz.y * sc;
       f.solid(sz.x * sc, sz.y * sc, sz.z * sc);
     } else table(c, f, m.woodDark, 1.2, 0.5, 0.44, 0.07);
-    props.box(X(FPU - 0.35), top + 0.015, Z(1.83), 0.26, 0.03, 0.2, '#2f4a5e', 0.2);
-    props.box(X(FPU - 0.35), top + 0.04, Z(1.83), 0.22, 0.025, 0.17, '#c9b48a', 0.05);
-    props.cyl(X(FPU + 0.25), top, Z(1.91), 0.04, 0.09, '#f2ede2');
-    props.cyl(X(FPU + 0.45), top, Z(1.78), 0.12, 0.02, '#a5733f');
-    props.cyl(X(FPU + 0.45), top + 0.02, Z(1.78), 0.035, 0.08, '#efe6d0');
+    props.box(X(FPU - 0.35), top + 0.015, Z(2.06), 0.26, 0.03, 0.2, '#2f4a5e', 0.2);
+    props.box(X(FPU - 0.35), top + 0.04, Z(2.06), 0.22, 0.025, 0.17, '#c9b48a', 0.05);
+    props.cyl(X(FPU + 0.25), top, Z(2.14), 0.04, 0.09, '#f2ede2');
+    props.cyl(X(FPU + 0.45), top, Z(2.01), 0.12, 0.02, '#a5733f');
+    props.cyl(X(FPU + 0.45), top + 0.02, Z(2.01), 0.035, 0.08, '#efe6d0');
   }
   for (const s of [-1, 1]) {
-    const cu = FPU + s * 1.45, cv = 1.85;
+    const cu = FPU + s * 1.45, cv = 2.05;
     const yaw = Math.atan2(-(FPU - cu), -(0.66 - cv));
     const f = new Frame(X(cu), F, Z(cv), yaw);
     if (c.fu.has('ArmChair_01')) { model(c, 'ArmChair_01', f); f.solid(0.86, 1.0, 0.8); }
     else armchair(c, f, s < 0 ? m.rust : m.green, m.woodDark);
     seat('Sit in the armchair', f.p(0, 0.5, 0), f.p(0, 1.12, 0.06), yaw, f.p(0, 0, -0.75));
   }
-  const livingLamp = floorLamp(c, FPU - 1.15, 2.95, F);
+  const livingLamp = floorLamp(c, FPU - 1.15, 3.35, F);
   // a side table with a lamp by the east armchair
   {
     const tx = X(FPU + 1.2), tz = Z(0.98);
@@ -342,7 +342,7 @@ export function buildInterior(c: Ctx) {
     W.physics.addCylinder(tx, tz, 0.22, F, F + 0.62);
     tableLamp(c, tx, F + 0.61, tz, { nightOnly: true, base: '#7f9a7a' });
   }
-  atlas.rug(X(FPU), F + 0.008, Z(2.0), 3.7, 2.4, R.rug1);
+  atlas.rug(X(FPU), F + 0.008, Z(2.25), 3.7, 2.5, R.rug1);
 
   // bookshelf in the south east corner, a window seat under the east window
   {
@@ -367,7 +367,7 @@ export function buildInterior(c: Ctx) {
   }
   {
     // window seat: a built-in bench with a cushion, under the east window
-    const u0 = IX - 0.52, v0 = 1.6, v1 = 3.2, h = 0.44;
+    const u0 = IX - 0.52, v0 = 2.0, v1 = 3.6, h = 0.44;
     bx(m.trim, u0, F, v0, IX, F + h - 0.06, v1, 'nowalk');
     bx(m.woodLight, u0 - 0.03, F + h - 0.06, v0 - 0.03, IX, F + h - 0.03, v1 + 0.03);
     for (let k = 0; k < 3; k++) bx(m.trim, u0 - 0.012, F + 0.08, v0 + 0.06 + k * 0.52, u0, F + h - 0.12, v0 + 0.5 + k * 0.52);
@@ -375,7 +375,7 @@ export function buildInterior(c: Ctx) {
     const fP = (v: number, col: string) => props.ball(X(IX - 0.14), F + h + 0.2, Z(v), 0.06, 0.17, 0.17, col, 0, 0, -0.25);
     fP(v0 + 0.25, '#9a4e32'); fP(v1 - 0.25, '#c9a46a');
     props.box(X(u0 + 0.25), F + h + 0.075, Z(2.8), 0.16, 0.03, 0.22, '#40584c', 0.3);
-    const f = new Frame(X(IX - 0.26), F, Z(2.3), Math.PI / 2);
+    const f = new Frame(X(IX - 0.26), F, Z(2.7), Math.PI / 2);
     seat('Sit in the window seat', f.p(0, 0.45, 0), f.p(0, 1.1, 0.08), Math.PI / 2, f.p(0, 0, -0.75), 'Sitting by the window', 1.7);
   }
   // a tall plant by the opening, coats by the front door, a rug inside it
@@ -388,23 +388,24 @@ export function buildInterior(c: Ctx) {
     W.physics.addCylinder(X(u), Z(v), 0.2 * s, y0, y0 + 0.8 * s);
   };
   plant(IX - 0.3, 1.1, F, 1.1);
-  bx(m.woodDark, -1.36, F + 1.6, IZ - 0.03, -0.7, F + 1.68, IZ);
-  for (const [u, col, h] of [[-1.25, '#7a4a2e', 0.75], [-1.02, '#3e5a6e', 0.65], [-0.8, '#c9a46a', 0.45]] as [number, string, number][]) props.box(X(u), F + 1.62 - h / 2, Z(IZ - 0.09), 0.2, h, 0.1, col);
-  props.cyl(X(-1.0), F + 1.7, Z(IZ - 0.12), 0.17, 0.05, '#c9a46a');
-  atlas.rug(X(0), F + 0.008, Z(IZ - 0.55), 1.1, 0.7, R.runner);
+  bx(m.woodDark, -1.96, F + 1.6, IZ - 0.03, -1.3, F + 1.68, IZ);
+  for (const [u, col, h] of [[-1.85, '#7a4a2e', 0.75], [-1.62, '#3e5a6e', 0.65], [-1.4, '#c9a46a', 0.45]] as [number, string, number][]) props.box(X(u), F + 1.62 - h / 2, Z(IZ - 0.09), 0.2, h, 0.1, col);
+  props.cyl(X(-1.6), F + 1.7, Z(IZ - 0.12), 0.17, 0.05, '#c9a46a');
+  atlas.rug(X(D.DOOR_U), F + 0.008, Z(IZ - 0.55), 1.1, 0.7, R.runner);
 
   // =================================================================== KITCHEN + DINING (back of the great room)
   {
     const cab = m.cabinet, top = m.woodLight;
-    const sinkU = 4.9, nv0 = -IZ, nv1 = -IZ + 0.58, ku0 = 3.4;
+    const KX = D.STUDY_U - TI2;
+    const sinkU = 3.6, nv0 = -IZ, nv1 = -IZ + 0.58, ku0 = 1.4;
     const su0 = sinkU - 0.36, su1 = sinkU + 0.36;
     // north run with a farmhouse sink under the window
     bx(cab, ku0, F + 0.1, nv0, su0, F + 0.86, nv1, 'nowalk');
-    bx(cab, su1, F + 0.1, nv0, IX, F + 0.86, nv1, 'nowalk');
+    bx(cab, su1, F + 0.1, nv0, KX, F + 0.86, nv1, 'nowalk');
     bx(cab, su0, F + 0.1, nv0, su1, F + 0.62, nv1 - 0.02, 'nowalk');
-    bx(m.black, ku0 + 0.02, F, nv0, IX, F + 0.1, nv1 - 0.06);
+    bx(m.black, ku0 + 0.02, F, nv0, KX, F + 0.1, nv1 - 0.06);
     bx(top, ku0 - 0.02, F + 0.86, nv0, su0, F + 0.91, nv1 + 0.04);
-    bx(top, su1, F + 0.86, nv0, IX, F + 0.91, nv1 + 0.04);
+    bx(top, su1, F + 0.86, nv0, KX, F + 0.91, nv1 + 0.04);
     bx(m.trim, su0, F + 0.62, nv0, su1, F + 0.66, nv1 + 0.05);
     bx(m.trim, su0, F + 0.62, nv1, su1, F + 0.92, nv1 + 0.05);
     bx(m.trim, su0, F + 0.62, nv0, su1, F + 0.92, nv0 + 0.05);
@@ -412,47 +413,45 @@ export function buildInterior(c: Ctx) {
     bx(m.trim, su1 - 0.04, F + 0.62, nv0, su1, F + 0.92, nv1 + 0.05);
     b.cyl(m.iron, X(sinkU), F + 0.92, Z(nv0 + 0.06), 0.018, 0.3, { seg: 8 });
     b.box(m.iron, X(sinkU), F + 1.2, Z(nv0 + 0.15), 0.03, 0.03, 0.2, { collide: false });
-    for (const [a0, a1] of [[ku0 + 0.05, ku0 + 0.55], [ku0 + 0.6, su0 - 0.04], [su1 + 0.04, su1 + 0.5], [su1 + 0.55, IX - 0.62]]) {
+    for (const [a0, a1] of [[ku0 + 0.05, ku0 + 0.55], [ku0 + 0.6, su0 - 0.04], [su1 + 0.04, su1 + 0.5], [su1 + 0.55, KX - 0.62]]) {
       bx(cab, a0, F + 0.14, nv1, a1, F + 0.82, nv1 + 0.015);
       props.ball(X(a1 - 0.05), F + 0.72, Z(nv1 + 0.03), 0.015, 0.015, 0.015, '#3a3a3a');
     }
     // east run under the east window, then the range and a pantry by the opening
-    const eu0 = IX - 0.58, ev1 = -2.0;
-    bx(cab, eu0, F + 0.1, nv1, IX, F + 0.86, ev1, 'nowalk');
-    bx(m.black, eu0 + 0.06, F, nv1, IX, F + 0.1, ev1);
-    bx(top, eu0 - 0.04, F + 0.86, nv1 + 0.04, IX, F + 0.91, ev1 + 0.03);
-    for (const [a0, a1] of [[nv1 + 0.06, -3.0], [-2.95, ev1 - 0.05]]) {
+    const eu0 = KX - 0.58, ev1 = -2.55;
+    bx(cab, eu0, F + 0.1, nv1, KX, F + 0.86, ev1, 'nowalk');
+    bx(m.black, eu0 + 0.06, F, nv1, KX, F + 0.1, ev1);
+    bx(top, eu0 - 0.04, F + 0.86, nv1 + 0.04, KX, F + 0.91, ev1 + 0.03);
+    for (const [a0, a1] of [[nv1 + 0.06, -3.75], [-3.7, ev1 - 0.05]]) {
       bx(cab, eu0 - 0.015, F + 0.14, a0, eu0, F + 0.82, a1);
       props.ball(X(eu0 - 0.03), F + 0.72, Z(a1 - 0.05), 0.015, 0.015, 0.015, '#3a3a3a');
     }
     // backsplash tile (lower under the windows)
     bx(m.tileWall, ku0 - 0.02, F + 0.91, -IZ, sinkU - 0.6, F + 1.5, -IZ + 0.012);
-    bx(m.tileWall, sinkU + 0.6, F + 0.91, -IZ, IX, F + 1.5, -IZ + 0.012);
+    bx(m.tileWall, sinkU + 0.6, F + 0.91, -IZ, KX, F + 1.5, -IZ + 0.012);
     bx(m.tileWall, sinkU - 0.6, F + 0.91, -IZ, sinkU + 0.6, F + 1.07, -IZ + 0.012);
-    bx(m.tileWall, IX - 0.012, F + 0.91, -IZ, IX, F + 1.5, -2.95);
-    bx(m.tileWall, IX - 0.012, F + 0.91, -1.85, IX, F + 1.5, -1.05);
-    bx(m.tileWall, IX - 0.012, F + 0.91, -2.95, IX, F + 1.07, -1.85);
+    bx(m.tileWall, KX - 0.012, F + 0.91, -IZ, KX, F + 1.5, -1.5);
     // a vintage enamel range
-    const r0 = -1.92, r1 = -1.14;
-    bx(m.trim, IX - 0.64, F + 0.08, r0, IX, F + 0.88, r1, 'nowalk');
-    bx(m.black, IX - 0.62, F, r0 + 0.04, IX, F + 0.08, r1 - 0.04);
-    bx(m.iron, IX - 0.64, F + 0.88, r0, IX, F + 0.92, r1);
-    bx(m.trim, IX - 0.08, F + 0.92, r0, IX, F + 1.15, r1);
-    bx(m.iron, IX - 0.655, F + 0.22, r0 + 0.08, IX - 0.64, F + 0.7, r1 - 0.08);
-    bx(m.iron, IX - 0.68, F + 0.74, r0 + 0.1, IX - 0.66, F + 0.76, r1 - 0.1);
-    for (const vv of [r0 + 0.2, r1 - 0.2]) for (const uu of [IX - 0.48, IX - 0.25]) props.cyl(X(uu), F + 0.92, Z(vv), 0.09, 0.008, '#151515');
-    for (let i = 0; i < 4; i++) props.cyl(X(IX - 0.645), F + 0.82, Z(r0 + 0.15 + i * 0.16), 0.02, 0.02, '#e8e0cc', 0, 0, Math.PI / 2);
-    props.cyl(X(IX - 0.25), F + 0.928, Z(r0 + 0.2), 0.1, 0.13, '#b5432f');
-    props.cyl(X(IX - 0.25), F + 1.055, Z(r0 + 0.2), 0.03, 0.03, '#2a2a2a');
-    props.cyl(X(IX - 0.48), F + 0.928, Z(r1 - 0.2), 0.13, 0.04, '#1f1f1f');
-    bx(cab, IX - 0.56, F, -0.95, IX, F + 2.05, -TI2 - 0.02, 'nowalk');
-    bx(cab, IX - 0.575, F + 0.08, -0.92, IX - 0.56, F + 1.98, -0.52);
-    bx(cab, IX - 0.575, F + 0.08, -0.5, IX - 0.56, F + 1.98, -0.12);
-    props.ball(X(IX - 0.59), F + 1.05, Z(-0.55), 0.015, 0.015, 0.015, '#3a3a3a');
-    props.ball(X(IX - 0.59), F + 1.05, Z(-0.47), 0.015, 0.015, 0.015, '#3a3a3a');
+    const r0 = -2.45, r1 = -1.67;
+    bx(m.trim, KX - 0.64, F + 0.08, r0, KX, F + 0.88, r1, 'nowalk');
+    bx(m.black, KX - 0.62, F, r0 + 0.04, KX, F + 0.08, r1 - 0.04);
+    bx(m.iron, KX - 0.64, F + 0.88, r0, KX, F + 0.92, r1);
+    bx(m.trim, KX - 0.08, F + 0.92, r0, KX, F + 1.15, r1);
+    bx(m.iron, KX - 0.655, F + 0.22, r0 + 0.08, KX - 0.64, F + 0.7, r1 - 0.08);
+    bx(m.iron, KX - 0.68, F + 0.74, r0 + 0.1, KX - 0.66, F + 0.76, r1 - 0.1);
+    for (const vv of [r0 + 0.2, r1 - 0.2]) for (const uu of [KX - 0.48, KX - 0.25]) props.cyl(X(uu), F + 0.92, Z(vv), 0.09, 0.008, '#151515');
+    for (let i = 0; i < 4; i++) props.cyl(X(KX - 0.645), F + 0.82, Z(r0 + 0.15 + i * 0.16), 0.02, 0.02, '#e8e0cc', 0, 0, Math.PI / 2);
+    props.cyl(X(KX - 0.25), F + 0.928, Z(r0 + 0.2), 0.1, 0.13, '#b5432f');
+    props.cyl(X(KX - 0.25), F + 1.055, Z(r0 + 0.2), 0.03, 0.03, '#2a2a2a');
+    props.cyl(X(KX - 0.48), F + 0.928, Z(r1 - 0.2), 0.13, 0.04, '#1f1f1f');
+    bx(cab, KX - 0.56, F, -1.45, KX, F + 2.05, -0.62, 'nowalk');
+    bx(cab, KX - 0.575, F + 0.08, -1.42, KX - 0.56, F + 1.98, -1.05);
+    bx(cab, KX - 0.575, F + 0.08, -1.03, KX - 0.56, F + 1.98, -0.65);
+    props.ball(X(KX - 0.59), F + 1.05, Z(-1.08), 0.015, 0.015, 0.015, '#3a3a3a');
+    props.ball(X(KX - 0.59), F + 1.05, Z(-1.0), 0.015, 0.015, 0.015, '#3a3a3a');
     // open shelves either side of the sink window, a plate shelf on the fireplace wall
     const jarCols = ['#c98b3a', '#e2d6b5', '#9fb7a0', '#d9a441', '#b85c3c', '#efe6d0'];
-    for (const [a0, a1] of [[ku0, sinkU - 0.7], [sinkU + 0.7, IX - 0.05]]) {
+    for (const [a0, a1] of [[ku0, sinkU - 0.7], [sinkU + 0.7, KX - 0.05]]) {
       for (const y of [F + 1.5, F + 1.88]) {
         bx(top, a0, y, -IZ, a1, y + 0.03, -IZ + 0.24);
         for (const uu of [a0 + 0.1, a1 - 0.1]) bx(m.iron, uu - 0.01, y - 0.12, -IZ, uu + 0.01, y, -IZ + 0.2);
@@ -477,22 +476,41 @@ export function buildInterior(c: Ctx) {
     }
     for (let i = 0; i < 5; i++) props.cyl(X(pw0 + 0.1 + i * 0.16), F + 1.46, Z(-TI2 - 0.06), 0.04, 0.09, pick(['#f2ede2', '#b5432f', '#3e5a6e', '#d9a441']));
     // on the counters: bread board and loaf, a basket of eggs, a crock of utensils
-    props.box(X(IX - 0.3), F + 0.92, Z(-2.6), 0.32, 0.02, 0.24, '#a5733f');
-    props.ball(X(IX - 0.3), F + 0.98, Z(-2.6), 0.13, 0.07, 0.08, '#c78a45');
+    props.box(X(KX - 0.3), F + 0.92, Z(-3.2), 0.32, 0.02, 0.24, '#a5733f');
+    props.ball(X(KX - 0.3), F + 0.98, Z(-3.2), 0.13, 0.07, 0.08, '#c78a45');
     props.cyl(X(ku0 + 0.3), F + 0.91, Z(-IZ + 0.25), 0.12, 0.08, '#9c7a52');
     for (let i = 0; i < 5; i++) props.ball(X(ku0 + 0.26 + (i % 3) * 0.05), F + 1.0, Z(-IZ + 0.22 + Math.floor(i / 3) * 0.06), 0.03, 0.04, 0.03, '#efe2c8');
-    props.cyl(X(IX - 0.25), F + 0.91, Z(-IZ + 0.3), 0.07, 0.16, '#e8e0cc');
-    for (let i = 0; i < 4; i++) props.cyl(X(IX - 0.25 + (rnd() - 0.5) * 0.05), F + 1.0, Z(-IZ + 0.3 + (rnd() - 0.5) * 0.05), 0.008, 0.22, '#7a5232', 0, (rnd() - 0.5) * 0.3, (rnd() - 0.5) * 0.3);
+    props.cyl(X(KX - 0.25), F + 0.91, Z(-IZ + 0.3), 0.07, 0.16, '#e8e0cc');
+    for (let i = 0; i < 4; i++) props.cyl(X(KX - 0.25 + (rnd() - 0.5) * 0.05), F + 1.0, Z(-IZ + 0.3 + (rnd() - 0.5) * 0.05), 0.008, 0.22, '#7a5232', 0, (rnd() - 0.5) * 0.3, (rnd() - 0.5) * 0.3);
     // cafe curtains and a runner by the sink
     atlas.box(X(sinkU), F + 1.36, Z(-IZ + 0.05), 0.98, 0.42, 0.01, R.gingham);
     b.cyl(m.iron, X(sinkU - 0.55), F + 1.58, Z(-IZ + 0.05), 0.008, 1.1, { seg: 6, rotZ: -Math.PI / 2 });
-    atlas.box(X(IX - 0.05), F + 1.36, Z(-2.4), 0.01, 0.42, 0.88, R.gingham);
-    atlas.rug(X(sinkU), F + 0.008, Z(-3.7), 1.4, 0.55, R.runner);
+    atlas.rug(X(sinkU), F + 0.008, Z(-4.55), 1.4, 0.55, R.runner);
     W.lamps.add(P3(sinkU, F + 1.45, -IZ + 0.4), '#ffcf96', 1.6, 4.5, { nightOnly: true });
+      // an island with a butcher block top and three stools
+    const i0 = 2.0, i1 = 3.6, iv0 = -3.0, iv1 = -2.2;
+    bx(cab, i0 + 0.04, F + 0.1, iv0 + 0.04, i1 - 0.04, F + 0.88, iv1 - 0.04, 'nowalk');
+    bx(m.black, i0 + 0.08, F, iv0 + 0.08, i1 - 0.08, F + 0.1, iv1 - 0.08);
+    bx(top, i0 - 0.05, F + 0.88, iv0 - 0.05, i1 + 0.05, F + 0.93, iv1 + 0.2);
+    for (const a0 of [i0 + 0.1, (i0 + i1) / 2 + 0.05]) bx(cab, a0, F + 0.16, iv0 + 0.025, a0 + 0.7, F + 0.82, iv0 + 0.04);
+    props.cyl(X(i0 + 0.35), F + 0.93, Z(-2.6), 0.15, 0.08, '#e9dfc6');
+    for (let i = 0; i < 5; i++) props.ball(X(i0 + 0.35 + Math.cos(i * 1.3) * 0.07), F + 1.0, Z(-2.6 + Math.sin(i * 1.3) * 0.07), 0.04, 0.035, 0.04, i % 2 ? '#f2c230' : '#d98a2b');
+    props.cyl(X(i1 - 0.3), F + 0.93, Z(-2.7), 0.06, 0.2, '#efe6d0');
+    for (const su of [i0 + 0.35, (i0 + i1) / 2, i1 - 0.35]) {
+      b.cyl(m.woodDark, X(su), F, Z(iv1 + 0.42), 0.02, 0.62, { seg: 6 });
+      b.cyl(m.woodDark, X(su), F, Z(iv1 + 0.42), 0.16, 0.03, { seg: 10 });
+      b.cyl(m.woodLight, X(su), F + 0.62, Z(iv1 + 0.42), 0.18, 0.05, { seg: 14 });
+      W.physics.addCylinder(X(su), Z(iv1 + 0.42), 0.19, F, F + 0.67);
+    }
+    W.physics.addBox(X(i0 - 0.05), F, Z(iv0 - 0.05), X(i1 + 0.05), F + 0.93, Z(iv1 + 0.05), { walk: false });
+    const il = W.lamps.add(P3((i0 + i1) / 2, F + 2.0, (iv0 + iv1) / 2), '#ffc98a', 2.4, 5.5, { nightOnly: true });
+    shades.shade(il, X((i0 + i1) / 2), F + 1.9, Z((iv0 + iv1) / 2), 0.2, 0.05, 0.16, 0.55);
+    b.cyl(m.iron, X((i0 + i1) / 2), F + 2.06, Z((iv0 + iv1) / 2), 0.006, D.CEIL - 2.06, { seg: 5 });
   }
+
   // dining table, four chairs, a bowl of apples, the pendant
   {
-    const tu = 1.5, tv = -2.5;
+    const tu = 0.0, tv = -3.4;
     let top = F + 0.78;
     if (c.fu.has('dining_table')) {
       // the scanned table is big for a farmhouse kitchen: 0.75 in plan, 0.92 in height
@@ -528,25 +546,25 @@ export function buildInterior(c: Ctx) {
   }
   // mudroom corner by the back door: a bench with hooks above, boots, a mat
   {
-    const u0 = WU + TI2, u1 = u0 + 0.42, v0 = -IZ + 0.15, v1 = -2.9, h = 0.45;
+    const u0 = WU + TI2, u1 = u0 + 0.42, v0 = -IZ + 0.15, v1 = -3.3, h = 0.45;
     bx(m.woodLight, u0, F + h - 0.04, v0, u1, F + h, v1);
     bx(m.woodDark, u0, F, v0, u1, F + h - 0.04, v0 + 0.04); bx(m.woodDark, u0, F, v1 - 0.04, u1, F + h - 0.04, v1);
     bx(m.woodDark, u0, F + 0.1, v0, u1, F + 0.12, v1);
     solid(u0, F, v0, u1, F + h, v1);
     bx(m.woodDark, u0, F + 1.62, v0 + 0.05, u0 + 0.03, F + 1.72, v1 - 0.05);
-    const coats: [number, string, number][] = [[-4.3, '#4a5a3a', 0.8], [-3.9, '#7a3a2a', 0.7], [-3.5, '#c9a46a', 0.55], [-3.15, '#2f3f5a', 0.75]];
+    const coats: [number, string, number][] = [[-5.0, '#4a5a3a', 0.8], [-4.6, '#7a3a2a', 0.7], [-4.2, '#c9a46a', 0.55], [-3.8, '#2f3f5a', 0.75]];
     for (const [v, col, hh] of coats) props.box(X(u0 + 0.09), F + 1.66 - hh / 2, Z(v), 0.1, hh, 0.32, col);
-    props.cyl(X(u0 + 0.14), F + 1.75, Z(-3.6), 0.16, 0.05, '#c9a46a');
-    for (const [v, col] of [[-4.2, '#3b2a1e'], [-3.95, '#3b2a1e'], [-3.5, '#2c3a2a'], [-3.3, '#2c3a2a']] as [number, string][]) props.box(X(u0 + 0.2), F + 0.07, Z(v), 0.24, 0.14, 0.1, col, 0.1);
-    props.cyl(X(u0 + 0.22), F + h, Z(-3.2), 0.13, 0.12, '#9c7a52');
-    const f = new Frame(X(u0 + 0.21), F, Z(-3.7), -Math.PI / 2);
+    props.cyl(X(u0 + 0.14), F + 1.75, Z(-4.3), 0.16, 0.05, '#c9a46a');
+    for (const [v, col] of [[-4.9, '#3b2a1e'], [-4.65, '#3b2a1e'], [-4.2, '#2c3a2a'], [-4.0, '#2c3a2a']] as [number, string][]) props.box(X(u0 + 0.2), F + 0.07, Z(v), 0.24, 0.14, 0.1, col, 0.1);
+    props.cyl(X(u0 + 0.22), F + h, Z(-3.6), 0.13, 0.12, '#9c7a52');
+    const f = new Frame(X(u0 + 0.21), F, Z(-4.4), -Math.PI / 2);
     seat('Sit on the bench', f.p(0, 0.45, 0), f.p(0, 1.08, 0.06), -Math.PI / 2, f.p(0, 0, -0.75));
     atlas.rug(X(D.BACK_DOOR_U), F + 0.008, Z(-IZ + 0.45), 0.95, 0.6, R.bathmat);
   }
 
   // =================================================================== BEDROOM (front of the west wing)
   {
-    const cu = -4.75, v0 = D.BB_V + TI2, len = 2.05, w = 1.46;
+    const cu = -5.9, v0 = D.BB_V + TI2, len = 2.05, w = 1.46;
     const vc = v0 + len / 2;
     const fr = m.woodDark;
     bx(fr, cu - w / 2 - 0.02, F, v0, cu + w / 2 + 0.02, F + 1.15, v0 + 0.06);
@@ -575,7 +593,7 @@ export function buildInterior(c: Ctx) {
     picture(c, cu, F + 1.68, v0 + 0.015, 0.5, 0.62, R.paint4, 0);
     // dresser against the hall wall
     let dTop = F + 0.86;
-    const dv = 3.3;
+    const dv = 3.8;
     if (c.fu.has('painted_wooden_cabinet')) {
       const sz = c.fu.size('painted_wooden_cabinet');
       const f = new Frame(X(WU - TI2 - 0.01 - sz.z / 2), F, Z(dv), Math.PI / 2);
@@ -587,24 +605,29 @@ export function buildInterior(c: Ctx) {
     for (let i = 0; i < 5; i++) props.ball(X(WU - 0.4 + (rnd() - 0.5) * 0.1), dTop + 0.19 + rnd() * 0.08, Z(dv - 0.3 + (rnd() - 0.5) * 0.1), 0.035, 0.035, 0.035, pick(['#e8a0a8', '#efe6d0']));
     props.box(X(WU - 0.4), dTop + 0.04, Z(dv + 0.35), 0.16, 0.08, 0.12, '#7a2e25');
     picture(c, WU - TI2 - 0.015, F + 1.75, dv, 0.55, 0.4, R.paint2, -Math.PI / 2);
-    atlas.rug(X(cu), F + 0.008, Z(2.75), 1.9, 1.15, R.rug3, true);
+    atlas.rug(X(cu), F + 0.008, Z(1.4), 1.9, 1.15, R.rug3, true);
+    if (c.fu.has('ArmChair_01')) {
+      const f = new Frame(X(-7.25), F, Z(4.55), -0.85);
+      model(c, 'ArmChair_01', f); f.solid(0.86, 1.0, 0.8);
+      seat('Sit in the armchair', f.p(0, 0.5, 0), f.p(0, 1.12, 0.06), -0.85, f.p(0, 0, -0.75));
+    }
   }
 
   // =================================================================== BATHROOM (back of the west wing)
   {
     const bu0 = -IX, bu1 = WU - TI2, bv0 = -IZ, bv1 = D.BB_V - TI2;
     wainscot(c, bu0, bv0, bu1, bv1, F, 1.2, [{ side: 'e', a: -1.45 - 0.1, b: -0.45 + 0.1 }]);
-    clawTub(c, -4.7, -IZ + 0.4, false, F);
-    toilet(c, new Frame(X(bu0 + 0.42), F, Z(-1.55), -Math.PI / 2));
-    pedestalSink(c, new Frame(X(-4.6), F, Z(bv1 - 0.3), 0));
+    clawTub(c, -5.8, -IZ + 0.4, false, F);
+    toilet(c, new Frame(X(bu0 + 0.42), F, Z(-3.0), -Math.PI / 2));
+    pedestalSink(c, new Frame(X(-5.8), F, Z(bv1 - 0.3), 0));
     // towel rail, a little cabinet stool, bath mat, plant on the sill
-    bx(m.woodDark, bu0, F + 1.0, -3.35, bu0 + 0.08, F + 1.03, -2.95);
-    atlas.box(X(bu0 + 0.07), F + 0.78, Z(-3.15), 0.03, 0.46, 0.38, R.towel);
-    atlas.rug(X(-4.7), F + 0.008, Z(-3.35), 0.9, 0.5, R.bathmat);
-    props.cyl(X(-4.7), F + 1.35, Z(-IZ + 0.08), 0.05, 0.08, '#a85c3a');
-    for (let i = 0; i < 5; i++) props.ball(X(-4.7 + (rnd() - 0.5) * 0.08), F + 1.47 + rnd() * 0.04, Z(-IZ + 0.08 + (rnd() - 0.5) * 0.06), 0.035, 0.03, 0.035, '#5f8a45');
-    props.cyl(X(-3.3), F, Z(-3.9), 0.18, 0.45, '#9c7a52');
-    props.box(X(-3.3), F + 0.47, Z(-3.9), 0.3, 0.04, 0.22, '#f4f1ea', 0.3);
+    bx(m.woodDark, bu0, F + 1.0, -4.75, bu0 + 0.08, F + 1.03, -4.35);
+    atlas.box(X(bu0 + 0.07), F + 0.78, Z(-4.55), 0.03, 0.46, 0.38, R.towel);
+    atlas.rug(X(-5.8), F + 0.008, Z(-4.15), 0.9, 0.5, R.bathmat);
+    props.cyl(X(-5.8), F + 1.35, Z(-IZ + 0.08), 0.05, 0.08, '#a85c3a');
+    for (let i = 0; i < 5; i++) props.ball(X(-5.8 + (rnd() - 0.5) * 0.08), F + 1.47 + rnd() * 0.04, Z(-IZ + 0.08 + (rnd() - 0.5) * 0.06), 0.035, 0.03, 0.035, '#5f8a45');
+    props.cyl(X(-4.2), F, Z(-4.9), 0.18, 0.45, '#9c7a52');
+    props.box(X(-4.2), F + 0.47, Z(-4.9), 0.3, 0.04, 0.22, '#f4f1ea', 0.3);
   }
 
   // =================================================================== ATTIC
@@ -612,20 +635,20 @@ export function buildInterior(c: Ctx) {
   {
     // the upstairs bathroom, north west corner: slipper tub under the gable window, toilet and sink on the partition
     const bu0 = -IX, bu1 = D.AB_U - TI2;
-    clawTub(c, bu0 + 0.4, -1.9, true, A);
-    toilet(c, new Frame(X(bu1 - 0.42), A, Z(-2.6), Math.PI / 2));
-    pedestalSink(c, new Frame(X(bu1 - 0.3), A, Z(-1.3), Math.PI / 2), false);
-    atlas.rug(X(bu0 + 1.15), A + 0.012, Z(-1.9), 0.5, 0.9, R.bathmat);
-    bx(m.woodDark, bu1 - 0.08, A + 1.0, -2.2, bu1, A + 1.03, -1.85);
-    atlas.box(X(bu1 - 0.07), A + 0.78, Z(-2.03), 0.03, 0.46, 0.32, R.towel);
-    props.cyl(X(-6.2), A, Z(-3.0), 0.07, 0.12, '#a85c3a');
-    for (let i = 0; i < 6; i++) props.ball(X(-6.2 + (rnd() - 0.5) * 0.14), A + 0.2 + rnd() * 0.1, Z(-3.0 + (rnd() - 0.5) * 0.12), 0.06, 0.05, 0.06, '#5f8a45');
+    clawTub(c, bu0 + 0.4, -2.4, true, A);
+    toilet(c, new Frame(X(bu1 - 0.42), A, Z(-3.3), Math.PI / 2));
+    pedestalSink(c, new Frame(X(bu1 - 0.3), A, Z(-1.5), Math.PI / 2), false);
+    atlas.rug(X(bu0 + 1.15), A + 0.012, Z(-2.4), 0.5, 0.9, R.bathmat);
+    bx(m.woodDark, bu1 - 0.08, A + 1.0, -2.6, bu1, A + 1.03, -2.25);
+    atlas.box(X(bu1 - 0.07), A + 0.78, Z(-2.43), 0.03, 0.46, 0.32, R.towel);
+    props.cyl(X(-7.6), A, Z(-3.6), 0.07, 0.12, '#a85c3a');
+    for (let i = 0; i < 6; i++) props.ball(X(-7.6 + (rnd() - 0.5) * 0.14), A + 0.2 + rnd() * 0.1, Z(-3.6 + (rnd() - 0.5) * 0.12), 0.06, 0.05, 0.06, '#5f8a45');
     // the landing in front of the terrace door: a plant and a basket of blankets
-    props.cyl(X(-6.3), A, Z(1.0), 0.18, 0.3, '#a85c3a');
-    for (let i = 0; i < 9; i++) props.ball(X(-6.3 + (rnd() - 0.5) * 0.3), A + 0.4 + rnd() * 0.4, Z(1.0 + (rnd() - 0.5) * 0.3), 0.13, 0.16, 0.13, pick(['#4e7a3e', '#5f8a45']));
-    W.physics.addCylinder(X(-6.3), Z(1.0), 0.22, A, A + 0.8);
-    props.cyl(X(-4.6), A, Z(2.6), 0.22, 0.32, '#9c7a52');
-    props.box(X(-4.6), A + 0.36, Z(2.6), 0.34, 0.08, 0.3, '#c9a46a', 0.3);
+    props.cyl(X(-7.7), A, Z(1.0), 0.18, 0.3, '#a85c3a');
+    for (let i = 0; i < 9; i++) props.ball(X(-7.7 + (rnd() - 0.5) * 0.3), A + 0.4 + rnd() * 0.4, Z(1.0 + (rnd() - 0.5) * 0.3), 0.13, 0.16, 0.13, pick(['#4e7a3e', '#5f8a45']));
+    W.physics.addCylinder(X(-7.7), Z(1.0), 0.22, A, A + 0.8);
+    props.cyl(X(-6.0), A, Z(3.0), 0.22, 0.32, '#9c7a52');
+    props.box(X(-6.0), A + 0.36, Z(3.0), 0.34, 0.08, 0.3, '#c9a46a', 0.3);
   }
   {
     // iron bed with its head against the east gable, between the two windows
@@ -673,12 +696,12 @@ export function buildInterior(c: Ctx) {
   }
   {
     // writing desk under the north east window
-    const dv0 = -2.45, dv1 = -1.2, u0 = IX - 0.6, u1 = IX - 0.02;
+    const dv0 = -2.8, dv1 = -1.45, u0 = IX - 0.6, u1 = IX - 0.02;
     bx(m.woodLight, u0, A + 0.72, dv0, u1, A + 0.76, dv1);
     for (const v of [dv0 + 0.04, dv1 - 0.04]) for (const u of [u0 + 0.04, u1 - 0.04]) bx(m.woodLight, u - 0.025, A, v - 0.025, u + 0.025, A + 0.72, v + 0.025);
     bx(m.woodLight, u0 + 0.04, A + 0.6, dv0 + 0.06, u1 - 0.03, A + 0.72, (dv0 + dv1) / 2);
     solid(u0, A, dv0, u1, A + 0.76, dv1);
-    chair(c, new Frame(X(u0 - 0.38), A, Z(-1.75), -Math.PI / 2), m.woodDark);
+    chair(c, new Frame(X(u0 - 0.38), A, Z(-2.1), -Math.PI / 2), m.woodDark);
     tableLamp(c, X(IX - 0.2), A + 0.76, Z(dv0 + 0.18), { on: false, base: '#3e5a6e' });
     props.box(X(u0 + 0.28), A + 0.765, Z(-1.7), 0.32, 0.012, 0.24, '#f2ede2', 0.15);
     props.box(X(u0 + 0.3), A + 0.775, Z(-1.68), 0.2, 0.003, 0.012, '#2a2a2a', 0.4);
@@ -719,7 +742,65 @@ export function buildInterior(c: Ctx) {
     props.cyl(X(-2.4), A, Z(-kv - 0.4), 0.22, 0.32, '#9c7a52');
     props.cyl(X(-1.9), A, Z(-kv - 0.45), 0.17, 0.26, '#b08d5a');
     props.box(X(0.9), A + 0.16, Z(-kv - 0.45), 0.5, 0.32, 0.4, '#a5733f', 0.2);
-    atlas.rug(X(-1.7), A + 0.008, Z(-2.3), 1.4, 0.8, R.runner);
+    atlas.rug(X(-1.65), A + 0.008, Z(-1.75), 1.3, 0.8, R.runner);
+  }
+  // =================================================================== STUDY (back east corner, behind the fireplace wall)
+  {
+    const su0 = D.STUDY_U + TI2;
+    const has = c.fu.has('wooden_bookshelf_worn');
+    const sc = 0.97, sz = c.fu.size('wooden_bookshelf_worn');
+    const d = has ? sz.z * sc : 0.4, w = has ? sz.x * sc : 1.2, h = has ? sz.y * sc : 2.0;
+    for (const vc of [-4.3, -2.55]) {
+      const v0 = vc - w / 2, v1 = vc + w / 2;
+      if (has) {
+        model(c, 'wooden_bookshelf_worn', new Frame(X(su0 + d / 2), F, Z(vc), -Math.PI / 2), sc);
+        [0.11, 0.39, 0.67, 0.96, 1.28, 1.66].map((y) => y * sc).forEach((y, i, a) => {
+          const gap = (i < a.length - 1 ? a[i + 1] : 2.0 * sc) - y;
+          books(props, 'z', v0 + 0.07, v1 - 0.07, F + y + 0.005, su0 + d * 0.42, 0.22, Math.min(0.3, gap - 0.04));
+        });
+      } else {
+        bx(m.woodDark, su0, F, v0, su0 + d, F + h, v1);
+      }
+      solid(su0, F, v0, su0 + d, F + h, v1);
+    }
+    takeBook(P3(su0 + d + 0.05, F + 1.3, -3.4));
+    // desk under the east window, a chair, a lamp
+    const du0 = IX - 0.6, du1 = IX - 0.02, dv0 = -3.45, dv1 = -2.15;
+    bx(m.woodDark, du0, F + 0.72, dv0, du1, F + 0.76, dv1);
+    for (const v of [dv0 + 0.04, dv1 - 0.04]) for (const u of [du0 + 0.04, du1 - 0.04]) bx(m.woodDark, u - 0.025, F, v - 0.025, u + 0.025, F + 0.72, v + 0.025);
+    bx(m.woodDark, du0 + 0.04, F + 0.58, dv0 + 0.06, du1 - 0.03, F + 0.72, -2.8);
+    solid(du0, F, dv0, du1, F + 0.76, dv1);
+    chair(c, new Frame(X(du0 - 0.38), F, Z(-2.8), -Math.PI / 2), m.woodDark, m.rust);
+    tableLamp(c, X(IX - 0.2), F + 0.76, Z(dv0 + 0.2), { base: '#3e5a6e' });
+    props.box(X(du0 + 0.28), F + 0.765, Z(-2.75), 0.32, 0.012, 0.24, '#f2ede2', 0.15);
+    props.cyl(X(du1 - 0.12), F + 0.76, Z(dv1 - 0.15), 0.04, 0.09, '#b5432f');
+    books(props, 'z', dv1 - 0.45, dv1 - 0.12, F + 0.76, IX - 0.14, 0.18, 0.24);
+    // an armchair and a floor lamp in the far corner, a rug
+    if (c.fu.has('ArmChair_01')) {
+      const f = new Frame(X(IX - 0.75), F, Z(-IZ + 0.85), 2.45);
+      model(c, 'ArmChair_01', f); f.solid(0.86, 1.0, 0.8);
+      seat('Sit in the armchair', f.p(0, 0.5, 0), f.p(0, 1.12, 0.06), 2.45, f.p(0, 0, -0.75), 'Reading in the study');
+    }
+    floorLamp(c, IX - 0.25, -3.85, F);
+    atlas.rug(X(6.85), F + 0.008, Z(-2.8), 1.9, 2.6, R.rug3, true);
+    picture(c, (D.STUDY_U + IX) / 2 + 0.6, F + 1.75, -TI2 - 0.015, 0.62, 0.43, R.paint3, Math.PI);
+  }
+  // =================================================================== ATTIC reading nook under the north slope
+  {
+    const n0 = -4.45, n1 = -2.45, nv0 = -kv - 0.62, nv1 = -kv + 0.2;
+    bx(m.woodDark, n0, A, nv0, n1, A + 0.32, nv1, false);
+    bx(m.linen, n0 + 0.04, A + 0.32, nv0 + 0.03, n1 - 0.04, A + 0.46, nv1 - 0.03);
+    atlas.box(X(n0 + 0.65), A + 0.48, Z((nv0 + nv1) / 2), 1.1, 0.04, nv1 - nv0 + 0.04, R.quilt1);
+    for (const [u, col] of [[n0 + 0.3, '#9a4e32'], [n0 + 0.7, '#6f8a7a'], [n1 - 0.35, '#c9a46a']] as [number, string][]) props.ball(X(u), A + 0.62, Z(nv0 + 0.18), 0.17, 0.15, 0.06, col, 0, -0.3);
+    solid(n0, A, nv0, n1, A + 0.46, nv1);
+    seat('Curl up on the daybed', P3((n0 + n1) / 2, A + 0.5, nv1 - 0.1), P3((n0 + n1) / 2, A + 0.98, nv0 + 0.45), Math.PI, P3((n0 + n1) / 2, A, nv1 + 0.55), 'Curled up with a book', 1.8);
+    const lb0 = -2.1, lb1 = -0.4, lv0 = -kv - 0.55, lv1 = -kv - 0.12;
+    bx(m.woodDark, lb0, A, lv0, lb1, A + 0.04, lv1); bx(m.woodDark, lb0, A + 0.76, lv0, lb1, A + 0.8, lv1); bx(m.woodDark, lb0, A, lv0, lb1, A + 0.8, lv0 + 0.04);
+    for (const u of [lb0, lb1 - 0.03]) bx(m.woodDark, u, A, lv0, u + 0.03, A + 0.8, lv1);
+    bx(m.woodDark, lb0 + 0.03, A + 0.39, lv0 + 0.02, lb1 - 0.03, A + 0.41, lv1 - 0.02);
+    for (const y of [0.04, 0.41]) books(props, 'x', lb0 + 0.05, lb1 - 0.05, A + y, (lv0 + lv1) / 2, 0.24, 0.3);
+    floorLamp(c, n0 - 0.35, -kv + 0.15, A);
+    atlas.rug(X((n0 + n1) / 2), A + 0.009, Z(-kv + 0.4), 2.2, 1.2, R.rug3, true);
   }
   // a soft fill under the ridge so the attic is not gloomy by day
   W.lamps.add(P3(1.5, A + 2.5, -1.0), '#ffd6a6', 1.3, 8, { on: true });

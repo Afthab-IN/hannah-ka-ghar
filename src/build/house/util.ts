@@ -213,7 +213,7 @@ export class Atlas {
 // ---------------------------------------------------------------------------
 // Lamp shades that glow with their lamp: one merged mesh, a level per lamp.
 // ---------------------------------------------------------------------------
-const MAX_SHADES = 16;
+const MAX_SHADES = 32;
 export class Shades {
   private geos: THREE.BufferGeometry[] = [];
   lamps: Lamp[] = [];

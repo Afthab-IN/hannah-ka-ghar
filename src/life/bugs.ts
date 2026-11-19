@@ -64,7 +64,7 @@ export function buildFireflies() {
   pts.renderOrder = 30;
   W.scene.add(pts);
   W.noReflect.push(pts);
-  W.onUpdate(() => { mat.uniforms.uPx.value = Math.min(2, window.devicePixelRatio || 1); pts.visible = U.uNight.value > 0.02; });
+  W.onUpdate(() => { mat.uniforms.uPx.value = Math.min(2, window.devicePixelRatio || 1); pts.visible = U.uNight.value > 0.02 && U.uRain.value < 0.5; });
   return pts;
 }
 
@@ -129,7 +129,7 @@ export function buildButterflies() {
   let init = false;
   W.onUpdate((dt, t) => {
     const cam = W.camera.position;
-    const day = U.uDay.value * (1 - U.uNight.value);
+    const day = U.uDay.value * (1 - U.uNight.value) * (1 - U.uRain.value);
     im.visible = day > 0.05;
     if (!im.visible) return;
     bs.forEach((b, i) => {

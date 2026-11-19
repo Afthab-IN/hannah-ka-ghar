@@ -33,6 +33,7 @@ export const U = {
   uIndoorAmb: { value: 0.32 }, // how much sky ambient reaches inside
   uIndoorFill: { value: new THREE.Color(0.05, 0.04, 0.03) }, // warm bounce light inside by day
   uWindowGlow: { value: 0 }, // 0 day .. 1 night: lit windows
+  uRain: { value: 0 }, // 0 dry .. 1 raining
 };
 
 // Shared GLSL: the analytic atmosphere used by the sky dome and by the fog.
@@ -68,6 +69,7 @@ uniform vec3 uLightCol;
 uniform vec2 uWindDir;
 uniform float uWindAmp;
 uniform float uWindowGlow;
+uniform float uRain;
 ${ATMO_GLSL}
 float h21(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float h31(vec3 p) { return h21(p.xy + p.z * 17.13); }

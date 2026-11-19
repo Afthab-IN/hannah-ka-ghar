@@ -224,6 +224,8 @@ export class TimeOfDay {
   state: SkyState = { hour: 18.9, sunElev: 5, exposure: 0.9, envIntensity: 1, lightIntensity: 4, moonMode: false };
   dirty = true;
   changed = true;
+  rain = 0;
+  rainTarget = 0;
   constructor(public light: THREE.DirectionalLight) {}
 
   forward = false;
@@ -245,6 +247,8 @@ export class TimeOfDay {
       this.hour = (((this.hour + (Math.abs(step) < 1e-4 ? diff : step)) % 24) + 24) % 24;
       this.dirty = true;
     }
+    const rd = this.rainTarget - this.rain;
+    if (Math.abs(rd) > 1e-3) { this.rain += rd * (1 - Math.exp(-dt * 0.35)); this.dirty = true; U.uRain.value = this.rain; }
     const cd = this.cloudTarget - this.cloudCover;
     if (Math.abs(cd) > 1e-4) { this.cloudCover += cd * (1 - Math.exp(-dt * 1.5)); U.uCloudCover.value = this.cloudCover; }
     if (this.dirty) this.apply();
@@ -278,6 +282,15 @@ export class TimeOfDay {
     lerpHex(U.uCloudCol.value, a.cloud, b.cloud, t, cloudI);
     lerpHex(U.uCloudShade.value, a.shade, b.shade, t, 1.0);
     U.uFogDensity.value = lerp(a.fog, b.fog, t);
+    // rain: grey, softer sky, thicker haze, dimmer sun
+    const r = this.rain;
+    if (r > 0.001) {
+      const grey = (c: THREE.Color, k: number) => { const l = c.r * 0.3 + c.g * 0.59 + c.b * 0.11; c.lerp(new THREE.Color(l, l, l * 1.05), r * 0.75).multiplyScalar(1 - r * k); };
+      grey(U.uZenith.value, 0.25); grey(U.uHorizon.value, 0.15); grey(U.uSunGlow.value, 0.6);
+      grey(U.uCloudCol.value, 0.35); grey(U.uCloudShade.value, 0.3);
+      U.uFogDensity.value *= 1 + r * 3.0;
+      U.uCloudCover.value = this.cloudCover + (0.98 - this.cloudCover) * r;
+    }
     const night = clamp((-elev - 3) / 10, 0, 1);
     U.uNight.value = night;
     U.uDay.value = clamp((elev + 3) / 14, 0, 1);
@@ -293,7 +306,7 @@ export class TimeOfDay {
     if (sunI >= moonI) {
       U.uLightDir.value.copy(sunDir.y < 0.03 ? new THREE.Vector3(sunDir.x, 0.03, sunDir.z).normalize() : sunDir);
       this.light.color.copy(sunCol);
-      this.light.intensity = sunI;
+      this.light.intensity = sunI * (1 - 0.72 * this.rain);
       this.state.moonMode = false;
     } else {
       U.uLightDir.value.copy(moonDir);
@@ -309,7 +322,7 @@ export class TimeOfDay {
     this.state.hour = this.hour;
     this.state.sunElev = elev;
     this.state.exposure = lerp(a.exposure, b.exposure, t);
-    this.state.envIntensity = lerp(a.env, b.env, t);
+    this.state.envIntensity = lerp(a.env, b.env, t) * (1 - 0.2 * this.rain);
     this.state.lightIntensity = this.light.intensity;
     this.dirty = false;
     this.changed = true;
