@@ -7,6 +7,7 @@ import { heightAt, WATER_Y, pondDist } from '../world/terrain';
 import { PADDOCK, COOP, BAKERY, HOUSE, POND } from '../world/layout';
 import { mulberry32, makeSimplex } from '../noise';
 import { Cat, Hen, collapse } from './critters';
+import { buildFish } from './fish';
 
 let _duckMat: THREE.Material | null = null;
 const duckMat = () => (_duckMat ??= patchMaterial(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6 }), { key: 'duck' }));
@@ -436,6 +437,7 @@ function ducks() {
 
 export default async function build() {
   ducks();
+  buildFish();
   cat();
   chickens();
   const jobs = [horses()];

@@ -83,6 +83,34 @@ export class Sound {
     return pn;
   }
 
+  private splashBuf: AudioBuffer | null = null;
+  /** A small water splash, synthesised (decaying filtered noise with a plop). */
+  splash(pos: THREE.Vector3, volume = 0.6) {
+    if (!this.ctx || !this.master) return;
+    const ctx = this.ctx;
+    if (!this.splashBuf) {
+      const len = Math.floor(ctx.sampleRate * 0.7);
+      const b = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = b.getChannelData(0);
+      let lp = 0;
+      for (let i = 0; i < len; i++) {
+        const t = i / ctx.sampleRate;
+        const n = Math.random() * 2 - 1;
+        lp += (n - lp) * 0.35;
+        const plop = Math.sin(2 * Math.PI * (380 - 260 * Math.min(1, t / 0.08)) * t) * Math.exp(-t * 40) * 0.6;
+        d[i] = (lp * Math.exp(-t * 7) * (t < 0.01 ? t / 0.01 : 1) + plop) * 0.8;
+      }
+      this.splashBuf = b;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = this.splashBuf;
+    src.playbackRate.value = 0.85 + Math.random() * 0.3;
+    const g = ctx.createGain();
+    g.gain.value = volume;
+    src.connect(g).connect(this.panner(pos, 3, 60)).connect(this.master);
+    src.start();
+  }
+
   /** One-shot. pos = positional (else plain stereo). */
   play(name: string, opts: { pos?: THREE.Vector3; volume?: number; rate?: number; ref?: number; max?: number } = {}) {
     if (!this.ctx || !this.master) return;
