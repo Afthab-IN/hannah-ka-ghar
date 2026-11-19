@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Reflector } from 'three/addons/objects/Reflector.js';
 import { W } from '../../world';
 import type { Builder } from '../kit';
 import { M } from '../materials';
@@ -14,6 +15,37 @@ import type { Furniture, FurnName } from './furniture';
 const { X, Z, F, A, IX, IZ } = D;
 const rnd = mulberry32(4242);
 export const MIRROR = M.paint('#c7d1d4', 0.04, 1.0);
+
+/**
+ * A real mirror: a Reflector plane in front of the glass. It only renders while
+ * you are close and in front of it, so it costs nothing elsewhere.
+ */
+function addMirror(at: THREE.Vector3, yaw: number, w: number, h: number) {
+  const px = Math.min(2, window.devicePixelRatio || 1);
+  const mirror = new Reflector(new THREE.PlaneGeometry(w, h), {
+    clipBias: 0.003, textureWidth: Math.round(384 * px), textureHeight: Math.round(480 * px), color: new THREE.Color('#c9d0d2'),
+  });
+  mirror.position.copy(at);
+  // the glass faces local -z (the wall is behind it at +z)
+  mirror.rotation.y = yaw + Math.PI;
+  mirror.updateMatrixWorld();
+  W.scene.add(mirror);
+  // only the room matters in a small bathroom mirror: skip grass, flowers and trees outside
+  const render = mirror.onBeforeRender.bind(mirror);
+  mirror.onBeforeRender = (...args: Parameters<typeof render>) => {
+    const hide = [...W.noReflect, ...['trees', 'meadow', 'terrain', 'pond', 'birds', 'bakery', 'barn'].map((nm) => W.scene.getObjectByName(nm))].filter(Boolean) as THREE.Object3D[];
+    const vis = hide.map((o) => o.visible);
+    hide.forEach((o) => (o.visible = false));
+    render(...args);
+    hide.forEach((o, i) => (o.visible = vis[i]));
+  };
+  const n = new THREE.Vector3(0, 0, 1).applyQuaternion(mirror.quaternion);
+  const d = new THREE.Vector3();
+  W.onUpdate(() => {
+    d.subVectors(W.camera.position, mirror.position);
+    mirror.visible = d.length() < 4.5 && d.dot(n) > 0.05 && Math.abs(d.y) < 2;
+  });
+}
 const BOOKS = ['#7a2e25', '#2f4a5e', '#5e6b3a', '#c9b48a', '#8a5a2b', '#3b3b3b', '#a2683a', '#6d2f4a', '#d8cfb8', '#40584c', '#b9472e', '#264653', '#e0c38c'];
 const pick = <T,>(a: T[]) => a[Math.floor(rnd() * a.length)];
 
@@ -196,6 +228,7 @@ function pedestalSink(c: Ctx, f: Frame, nightLamp = true) {
   f.solid(0.58, 0.9, 0.46, 0, 0.08);
   f.box(b, m.woodDark, 0, 1.6, 0.29, 0.6, 0.72, 0.02);
   f.box(b, MIRROR, 0, 1.6, 0.275, 0.52, 0.64, 0.012);
+  addMirror(f.p(0, 1.6, 0.267), f.yaw, 0.52, 0.64);
   const sp = f.p(0, 2.06, 0.18);
   const lamp = W.lamps.add(sp, '#ffd6a0', 2.0, 4.5, { nightOnly: nightLamp, on: true });
   shades.shade(lamp, sp.x, sp.y - 0.08, sp.z, 0.09, 0.06, 0.14);
